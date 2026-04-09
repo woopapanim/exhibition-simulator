@@ -1,0 +1,8 @@
+- generic [ref=e4]:
+  - generic [ref=e5]: ABOARD X
+  - heading "새 프로젝트 만들기" [level=2] [ref=e6]
+  - paragraph [ref=e7]: 전시관 시뮬레이션을 위한 프로젝트 이름을 입력하세요
+  - 'textbox "예: 2025 서울 아트페어" [active] [ref=e8]'
+  - button "프로젝트 생성" [disabled] [ref=e9]
+  - generic [ref=e10]: 또는
+  - button "기존 프로젝트 불러오기" [ref=e11] [cursor=pointer]

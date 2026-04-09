@@ -1,0 +1,219 @@
+- generic [ref=e3]:
+  - generic [ref=e12]:
+    - generic [ref=e13]:
+      - heading "ABOARD X" [level=1] [ref=e14]
+      - generic [ref=e15]:
+        - generic [ref=e16]:
+          - generic [ref=e17]: 포스코 광양 홍보관
+          - button "✎" [ref=e18] [cursor=pointer]
+        - generic [ref=e19]: ›
+        - generic [ref=e20]:
+          - generic [ref=e21]: 기본 시나리오
+          - button "✎" [ref=e22] [cursor=pointer]
+    - navigation [ref=e23]:
+      - button "Build" [ref=e24] [cursor=pointer]
+      - button "Simulate" [active] [ref=e25] [cursor=pointer]
+      - button "Analyze" [ref=e26] [cursor=pointer]
+      - button "Insights" [ref=e27] [cursor=pointer]
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - button "+" [ref=e30] [cursor=pointer]
+        - generic: 새 프로젝트
+      - generic [ref=e31]:
+        - button [ref=e32] [cursor=pointer]:
+          - img [ref=e33]
+        - generic: 저장
+      - generic [ref=e35]:
+        - button [ref=e36] [cursor=pointer]:
+          - img [ref=e37]
+        - generic: 불러오기
+      - button "Log in" [ref=e40] [cursor=pointer]
+      - button "Sign up" [ref=e41] [cursor=pointer]
+  - generic [ref=e42]:
+    - generic [ref=e113]:
+      - generic [ref=e114]:
+        - generic [ref=e115]:
+          - text: 관람 효율
+          - button "ⓘ" [ref=e116] [cursor=pointer]
+        - generic [ref=e117]: "-"
+      - generic [ref=e118]:
+        - generic [ref=e119]:
+          - text: 체험 전환율
+          - button "ⓘ" [ref=e120] [cursor=pointer]
+        - generic [ref=e121]: "-"
+      - generic [ref=e122]:
+        - generic [ref=e123]: 평균 체류
+        - generic [ref=e124]: "-"
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - text: 혼잡도
+          - button "ⓘ" [ref=e127] [cursor=pointer]
+        - generic [ref=e128]: 0초
+      - generic [ref=e130]:
+        - generic [ref=e131]: 현재 관람객
+        - generic [ref=e132]: 0명
+      - generic [ref=e133]:
+        - generic [ref=e134]: 스킵율
+        - generic [ref=e135]: 0%
+    - generic [ref=e137]:
+      - generic [ref=e138]:
+        - button "A1" [ref=e141] [cursor=pointer]
+        - generic [ref=e143]:
+          - text: 실행 범위
+          - generic [ref=e144]:
+            - combobox [ref=e145] [cursor=pointer]:
+              - option "9시" [selected]
+              - option "10시"
+              - option "11시"
+              - option "12시"
+              - option "13시"
+              - option "14시"
+              - option "15시"
+              - option "16시"
+              - option "17시"
+              - option "18시"
+            - generic [ref=e146]: —
+            - combobox [ref=e147] [cursor=pointer]:
+              - option "9시"
+              - option "10시" [selected]
+              - option "11시"
+              - option "12시"
+              - option "13시"
+              - option "14시"
+              - option "15시"
+              - option "16시"
+              - option "17시"
+              - option "18시"
+        - generic [ref=e149]:
+          - text: 재생 속도
+          - generic [ref=e150]:
+            - button "1×" [ref=e151] [cursor=pointer]
+            - button "3×" [ref=e152] [cursor=pointer]
+            - button "5×" [ref=e153] [cursor=pointer]
+            - button "10×" [ref=e154] [cursor=pointer]
+        - generic [ref=e156]:
+          - button "▶ 시작" [ref=e157] [cursor=pointer]
+          - button "⏸ 일시정지" [disabled] [ref=e158]
+          - button "⏹ 종료" [disabled] [ref=e159]
+      - generic [ref=e160]:
+        - generic [ref=e161]:
+          - generic [ref=e162]:
+            - combobox [ref=e163] [cursor=pointer]:
+              - option "9시 운영 설정" [selected]
+              - option "10시 운영 설정"
+              - option "11시 운영 설정"
+              - option "12시 운영 설정"
+              - option "13시 운영 설정"
+              - option "14시 운영 설정"
+              - option "15시 운영 설정"
+              - option "16시 운영 설정"
+              - option "17시 운영 설정"
+              - option "18시 운영 설정"
+            - button "전체 복사" [ref=e164] [cursor=pointer]
+          - generic [ref=e167]: 도슨트 투어
+          - generic [ref=e172]:
+            - generic [ref=e173]: 운영 설정
+            - generic [ref=e174]:
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - text: 입장 속도
+                  - generic [ref=e177]:
+                    - generic [ref=e178]: i
+                    - generic:
+                      - text: 분당 입장하는 관람객 수입니다.
+                      - text: 낮을수록 입장이 분산되어 초반 혼잡이 줄고,
+                      - text: 높을수록 한꺼번에 입장해 병목이 생길 수 있습니다.
+                - generic [ref=e179]: 5명/분
+              - slider [ref=e181] [cursor=pointer]: "5"
+            - generic [ref=e182]:
+              - generic [ref=e183]:
+                - generic [ref=e184]:
+                  - text: 스킵 임계
+                  - generic [ref=e185]:
+                    - generic [ref=e186]: i
+                    - generic:
+                      - text: 관람객이 미디어 앞에서 대기할 수 있는 최대 시간입니다.
+                      - text: 이 시간을 초과하면 해당 미디어를 포기(스킵)하고 다음으로 이동합니다.
+                      - text: 짧을수록 스킵이 잦고 · 길수록 병목 가능성이 높아집니다.
+                - generic [ref=e187]: 15초
+              - slider [ref=e189] [cursor=pointer]: "15"
+          - generic [ref=e191]:
+            - generic [ref=e192]:
+              - generic [ref=e193]: 예상 관람객 구성
+              - generic [ref=e194]: 합계 100%
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - generic [ref=e197]: 예상 관람객
+                - generic [ref=e198]: 30명
+              - slider [ref=e200] [cursor=pointer]: "30"
+            - generic [ref=e201]:
+              - generic [ref=e202]:
+                - generic [ref=e203]: 개인
+                - generic [ref=e205]: 30%
+              - slider [ref=e207] [cursor=pointer]: "30"
+            - generic [ref=e208]:
+              - generic [ref=e209]:
+                - generic [ref=e210]: 소그룹
+                - generic [ref=e212]: 20%
+              - slider [ref=e214] [cursor=pointer]: "20"
+            - generic [ref=e215]:
+              - generic [ref=e216]:
+                - generic [ref=e217]: 단체-학생
+                - generic [ref=e219]: 20%
+              - slider [ref=e221] [cursor=pointer]: "20"
+            - generic [ref=e222]:
+              - generic [ref=e223]:
+                - generic [ref=e224]: 단체-기업
+                - generic [ref=e226]: 15%
+              - slider [ref=e228] [cursor=pointer]: "15"
+            - generic [ref=e229]:
+              - generic [ref=e230]:
+                - generic [ref=e231]: 단체-일반
+                - generic [ref=e233]: 15%
+              - slider [ref=e235] [cursor=pointer]: "15"
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]: 방문자 타입
+              - generic [ref=e240]: 합계 100%
+            - generic [ref=e241]:
+              - generic [ref=e242]:
+                - generic [ref=e243]: 빠른 관람형
+                - generic [ref=e245]: 33%
+              - slider [ref=e247] [cursor=pointer]: "35"
+            - generic [ref=e248]:
+              - generic [ref=e249]:
+                - generic [ref=e250]: 정보 탐색형
+                - generic [ref=e252]: 34%
+              - slider [ref=e254] [cursor=pointer]: "35"
+            - generic [ref=e255]:
+              - generic [ref=e256]:
+                - generic [ref=e257]: 체험 몰입형
+                - generic [ref=e259]: 33%
+              - slider [ref=e261] [cursor=pointer]: "35"
+        - generic [ref=e265]:
+          - button "+" [ref=e266] [cursor=pointer]
+          - button "⟲" [ref=e267] [cursor=pointer]
+          - button "−" [ref=e268] [cursor=pointer]
+          - button "이동" [ref=e270] [cursor=pointer]:
+            - img [ref=e271]
+          - button "ⓘ" [ref=e277] [cursor=pointer]
+        - generic [ref=e278]:
+          - generic [ref=e279]: 개인(1인)
+          - generic [ref=e281]: 소그룹 2~5인
+          - generic [ref=e283]: 단체-학생 10~30인
+          - generic [ref=e285]: 단체-기업 10~50인
+          - generic [ref=e287]: 단체-일반 6~20인
+          - generic [ref=e289]: 대기중
+          - generic [ref=e291]: 스킵
+          - generic [ref=e293]: 체험중
+        - generic [ref=e295]:
+          - generic [ref=e296]:
+            - generic [ref=e297]: 스킵율 · 몰입 강도 인덱스
+            - generic [ref=e298]: 대기 15초 초과 시 스킵
+          - generic [ref=e299]:
+            - generic [ref=e300]: 존 / 미디어
+            - generic [ref=e301]: 스킵
+            - generic [ref=e302]: 체험
+            - generic [ref=e303]: 스킵율
+            - generic [ref=e304]: 몰입 강도
+          - generic [ref=e305]: 시뮬레이션을 시작하면 집계돼요.

@@ -1,0 +1,138 @@
+{
+  "version": 2,
+  "projectName": "포스코 광양 홍보관",
+  "scenarioName": "복잡 시나리오",
+  "floorCount": 1,
+  "floorSizes": [{ "w": 40, "h": 22 }],
+  "zones": [
+    {
+      "id": 0, "name": "로비", "floor": 0, "order": 0,
+      "x": 25, "y": 20, "w": 110, "h": 100,
+      "defCap": 40, "defDwell": 10, "flowType": "guided",
+      "entryPos": { "x": 33, "y": 28 },
+      "returnPos": null,
+      "exitPos":  { "x": 127, "y": 65 },
+      "media": [
+        {
+          "uid": "m_lobby_01", "name": "웰컴 영상",
+          "px": 45, "py": 45,
+          "cap": 20, "dwell": 30,
+          "widthCm": 300, "heightCm": 200,
+          "color": "#1D9E75", "bg": "#dcfce7"
+        },
+        {
+          "uid": "m_lobby_02", "name": "브랜드 소개",
+          "px": 80, "py": 80,
+          "cap": 12, "dwell": 45,
+          "widthCm": 200, "heightCm": 150,
+          "color": "#2563EB", "bg": "#EFF6FF"
+        }
+      ]
+    },
+    {
+      "id": 1, "name": "철강 역사관", "floor": 0, "order": 1,
+      "x": 145, "y": 15, "w": 155, "h": 130,
+      "defCap": 30, "defDwell": 20, "flowType": "guided",
+      "entryPos": { "x": 153, "y": 50 },
+      "returnPos": null,
+      "exitPos":  { "x": 292, "y": 50 },
+      "media": [
+        {
+          "uid": "m_hist_01", "name": "철강 역사 영상관",
+          "px": 160, "py": 30,
+          "cap": 10, "dwell": 90,
+          "widthCm": 350, "heightCm": 220,
+          "color": "#7C3AED", "bg": "#F5F3FF"
+        },
+        {
+          "uid": "m_hist_02", "name": "인터랙티브 연혁",
+          "px": 195, "py": 80,
+          "cap": 5, "dwell": 120,
+          "widthCm": 250, "heightCm": 180,
+          "color": "#D97706", "bg": "#FFFBEB"
+        },
+        {
+          "uid": "m_hist_03", "name": "제철 공정 체험",
+          "px": 250, "py": 35,
+          "cap": 8, "dwell": 60,
+          "widthCm": 220, "heightCm": 200,
+          "color": "#DC2626", "bg": "#FEF2F2"
+        }
+      ]
+    },
+    {
+      "id": 2, "name": "미래 기술관", "floor": 0, "order": 2,
+      "x": 310, "y": 15, "w": 155, "h": 130,
+      "defCap": 25, "defDwell": 30, "flowType": "free",
+      "entryPos": { "x": 318, "y": 50 },
+      "returnPos": null,
+      "exitPos":  { "x": 457, "y": 50 },
+      "media": [
+        {
+          "uid": "m_future_01", "name": "수소환원제철 VR",
+          "px": 325, "py": 30,
+          "cap": 4, "dwell": 180,
+          "widthCm": 150, "heightCm": 150,
+          "color": "#059669", "bg": "#ECFDF5"
+        },
+        {
+          "uid": "m_future_02", "name": "스마트 팩토리 AR",
+          "px": 370, "py": 80,
+          "cap": 6, "dwell": 150,
+          "widthCm": 200, "heightCm": 160,
+          "color": "#0891B2", "bg": "#ECFEFF"
+        },
+        {
+          "uid": "m_future_03", "name": "친환경 미래 영상",
+          "px": 420, "py": 30,
+          "cap": 12, "dwell": 90,
+          "widthCm": 280, "heightCm": 200,
+          "color": "#7C3AED", "bg": "#F5F3FF"
+        }
+      ]
+    }
+  ],
+  "slotCfgs": [
+    { "total": 20, "arrivalRate": 3, "skipThresh": 20,
+      "segs": { "individual": 40, "smallGroup": 30, "studentGroup": 10, "corpGroup": 10, "genGroup": 10 },
+      "docent": { "enabled": false, "interval": 30, "size": 15 },
+      "visitorTypes": { "quick": 40, "info": 35, "immersive": 25 } },
+    { "total": 45, "arrivalRate": 6, "skipThresh": 15,
+      "segs": { "individual": 30, "smallGroup": 25, "studentGroup": 20, "corpGroup": 15, "genGroup": 10 },
+      "docent": { "enabled": true,  "interval": 40, "size": 20 },
+      "visitorTypes": { "quick": 30, "info": 40, "immersive": 30 } },
+    { "total": 80, "arrivalRate": 8, "skipThresh": 12,
+      "segs": { "individual": 25, "smallGroup": 20, "studentGroup": 30, "corpGroup": 15, "genGroup": 10 },
+      "docent": { "enabled": true,  "interval": 30, "size": 25 },
+      "visitorTypes": { "quick": 25, "info": 35, "immersive": 40 } },
+    { "total": 100, "arrivalRate": 10, "skipThresh": 10,
+      "segs": { "individual": 20, "smallGroup": 20, "studentGroup": 25, "corpGroup": 20, "genGroup": 15 },
+      "docent": { "enabled": true,  "interval": 25, "size": 20 },
+      "visitorTypes": { "quick": 20, "info": 35, "immersive": 45 } },
+    { "total": 90, "arrivalRate": 9, "skipThresh": 12,
+      "segs": { "individual": 25, "smallGroup": 20, "studentGroup": 20, "corpGroup": 20, "genGroup": 15 },
+      "docent": { "enabled": true,  "interval": 30, "size": 20 },
+      "visitorTypes": { "quick": 25, "info": 35, "immersive": 40 } },
+    { "total": 110, "arrivalRate": 10, "skipThresh": 10,
+      "segs": { "individual": 20, "smallGroup": 20, "studentGroup": 20, "corpGroup": 25, "genGroup": 15 },
+      "docent": { "enabled": true,  "interval": 20, "size": 25 },
+      "visitorTypes": { "quick": 20, "info": 30, "immersive": 50 } },
+    { "total": 120, "arrivalRate": 12, "skipThresh": 8,
+      "segs": { "individual": 15, "smallGroup": 20, "studentGroup": 15, "corpGroup": 30, "genGroup": 20 },
+      "docent": { "enabled": true,  "interval": 20, "size": 30 },
+      "visitorTypes": { "quick": 15, "info": 30, "immersive": 55 } },
+    { "total": 95, "arrivalRate": 8, "skipThresh": 12,
+      "segs": { "individual": 25, "smallGroup": 25, "studentGroup": 15, "corpGroup": 20, "genGroup": 15 },
+      "docent": { "enabled": true,  "interval": 30, "size": 20 },
+      "visitorTypes": { "quick": 25, "info": 35, "immersive": 40 } },
+    { "total": 60, "arrivalRate": 6, "skipThresh": 15,
+      "segs": { "individual": 30, "smallGroup": 25, "studentGroup": 15, "corpGroup": 15, "genGroup": 15 },
+      "docent": { "enabled": false, "interval": 30, "size": 15 },
+      "visitorTypes": { "quick": 35, "info": 35, "immersive": 30 } },
+    { "total": 25, "arrivalRate": 3, "skipThresh": 20,
+      "segs": { "individual": 40, "smallGroup": 30, "studentGroup": 10, "corpGroup": 10, "genGroup": 10 },
+      "docent": { "enabled": false, "interval": 30, "size": 10 },
+      "visitorTypes": { "quick": 45, "info": 35, "immersive": 20 } }
+  ],
+  "simLogs": []
+}
