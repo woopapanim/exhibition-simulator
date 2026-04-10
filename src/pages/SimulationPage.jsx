@@ -321,6 +321,68 @@ export default function SimulationPage() {
   })
 
   // ═══════════════════════════════════════════════
+  // 존/미디어 편집 훅 (hooks/useZoneEditor.js)
+  // ═══════════════════════════════════════════════
+
+  const {
+    saveZoneName,
+    removeMedia,
+    moveMedia,
+    renameZone,
+    commitPolygon,
+    startPolyDraw,
+    cancelPolyDraw,
+    startMediaPolyDraw,
+    cancelMediaPolyDraw,
+    commitMediaPoly,
+    createRectMediaPoly,
+    createCircleMediaPoly,
+    clearMediaPoly,
+    enterMediaPolyEdit,
+    exitMediaPolyEdit,
+    addZone,
+    removeZone,
+    moveZoneOrder,
+    updateZone,
+    updateMedia,
+    addFloor,
+    removeFloor,
+  } = useZoneEditor({
+    simStatus,
+    viewFloor,
+    floorCount,
+    setZones,
+    setSelZoneId,
+    setEditZone,
+    setPolyDrawing,
+    setMediaPolyDrawing,
+    setMediaPolyEditingUid,
+    setFloorCount,
+    setFloorSizes,
+    setViewFloor,
+    setConfirmModal,
+    setCanUndo,
+    setCanRedo,
+    zonesRef,
+    polyDrawRef,
+    mediaPolyDrawRef,
+    mediaPolyEditRef,
+    floorSizesRef,
+    floorCountRef,
+    viewFloorRef,
+    dynCHRef,
+    selRef,
+    bCRef,
+    heatAcc,
+    skipStats,
+    engAcc,
+    undoStackRef,
+    redoStackRef,
+    drawBuild,
+    editZone,
+  })
+
+  // ═══════════════════════════════════════════════
   // Build 캔버스 이벤트 (useBuildCanvasEvents hook)
   // ═══════════════════════════════════════════════
 
@@ -585,68 +647,6 @@ export default function SimulationPage() {
     })
     return ()=>cleanup.forEach(fn=>fn())
   }, [applyVT, projectName])
-
-  // ═══════════════════════════════════════════════
-  // 존/미디어 편집 훅 (hooks/useZoneEditor.js)
-  // ═══════════════════════════════════════════════
-
-  const {
-    saveZoneName,
-    removeMedia,
-    moveMedia,
-    renameZone,
-    commitPolygon,
-    startPolyDraw,
-    cancelPolyDraw,
-    startMediaPolyDraw,
-    cancelMediaPolyDraw,
-    commitMediaPoly,
-    createRectMediaPoly,
-    createCircleMediaPoly,
-    clearMediaPoly,
-    enterMediaPolyEdit,
-    exitMediaPolyEdit,
-    addZone,
-    removeZone,
-    moveZoneOrder,
-    updateZone,
-    updateMedia,
-    addFloor,
-    removeFloor,
-  } = useZoneEditor({
-    simStatus,
-    viewFloor,
-    floorCount,
-    setZones,
-    setSelZoneId,
-    setEditZone,
-    setPolyDrawing,
-    setMediaPolyDrawing,
-    setMediaPolyEditingUid,
-    setFloorCount,
-    setFloorSizes,
-    setViewFloor,
-    setConfirmModal,
-    setCanUndo,
-    setCanRedo,
-    zonesRef,
-    polyDrawRef,
-    mediaPolyDrawRef,
-    mediaPolyEditRef,
-    floorSizesRef,
-    floorCountRef,
-    viewFloorRef,
-    dynCHRef,
-    selRef,
-    bCRef,
-    heatAcc,
-    skipStats,
-    engAcc,
-    undoStackRef,
-    redoStackRef,
-    drawBuild,
-    editZone,
-  })
 
   // ═══════════════════════════════════════════════
   // 시뮬레이션 엔진 (useSimEngine hook)
