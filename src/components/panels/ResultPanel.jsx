@@ -37,7 +37,7 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
   const gradeText  = grade === 'A' ? '우수한 전시 운영 상태입니다' : grade === 'B' ? '일부 개선으로 완성도를 높일 수 있습니다' : grade === 'C' ? '주요 지표에 개선이 필요합니다' : '즉각적인 개선 조치가 필요합니다'
 
   const subScores = [
-    { label: '동선 도달률', val: s1, color: '#1D9E75' },
+    { label: '동선 도달률', val: s1, color: '#0F172A' },
     { label: '체험 전환율', val: s2, color: '#6366f1' },
     { label: '혼잡도',     val: s3, color: '#F59E0B' },
     { label: '참여도',     val: s4, color: '#7C3AED' },
@@ -189,9 +189,9 @@ function ActionCard({ priority, category, title, detail, onBuild, setTab }) {
       </div>
       {setTab && (
         <button onClick={() => setTab('build')} style={{
-          flexShrink: 0, background: '#E6F7F1', border: '1px solid #A7E3CD',
+          flexShrink: 0, background: '#F0F0EE', border: '1px solid #D4D4D4',
           borderRadius: 6, padding: '5px 12px', fontSize: 10, fontWeight: 700,
-          color: '#1D9E75', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'center',
+          color: '#0F172A', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'center',
         }}>
           Build →
         </button>
@@ -224,7 +224,7 @@ function SectionTitle({ children, sub }) {
   return (
     <div style={{ marginBottom: 12 }}>
       <div style={{
-        width: 24, height: 3, background: '#1D9E75',
+        width: 24, height: 3, background: '#0F172A',
         borderRadius: 2, marginBottom: 6,
       }}/>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
@@ -510,7 +510,7 @@ function ReportView({ data, visible=true, setTab }) {
       const hasEng = totEnt > 0 || data?.engRate != null
       return (
         <div className="rpt-kpi-row" style={{ marginBottom: 8 }}>
-          <div className="rpt-kpi" style={{ borderTop: '3px solid #1D9E75', minHeight: 88 }}>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #0F172A', minHeight: 88 }}>
             <span className="rpt-kpi-l">도달률</span>
             <span className={`rpt-kpi-v${hasFlow&&flowEffNum>=70?' ok':hasFlow&&flowEffNum<40?' warn':''}`}
               style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
@@ -763,7 +763,7 @@ function SimLogCard({ log, onDelete }) {
         <span style={{fontSize:10,color:avgSR>30?'#DC2626':'#059669',fontWeight:600,flexShrink:0}}>스킵 {avgSR}%</span>
         {avgEng!=='-'&&<span style={{fontSize:10,color:'#7C3AED',fontWeight:600,flexShrink:0}}>★{avgEng}</span>}
         <span style={{fontSize:10,color:'#9CA3AF',flexShrink:0}}>{open?'▲':'▼'}</span>
-        <button style={{background:'#E6F7F1',border:'1px solid #A7E3CD',borderRadius:5,cursor:'pointer',fontSize:10,color:'#16855f',padding:'2px 7px',flexShrink:0,fontWeight:600}}
+        <button style={{background:'#F0F0EE',border:'1px solid #D4D4D4',borderRadius:5,cursor:'pointer',fontSize:10,color:'#0F172A',padding:'2px 7px',flexShrink:0,fontWeight:600}}
           onClick={e=>{e.stopPropagation(); setDetailOpen(true)}} title="상세 보기">상세 보기</button>
         <button style={{background:'none',border:'none',cursor:'pointer',fontSize:12,color:'#ccc',padding:'0 2px',flexShrink:0}}
           onClick={e=>{e.stopPropagation(); onDelete(log.id)}} title="삭제">✕</button>
@@ -875,8 +875,8 @@ function EmptyState({ setTab }) {
       ),
       title: '전시 건강도 점수',
       desc: '도달률·전환율·혼잡도·참여도를 종합한 0-100 점수와 A–D 등급',
-      color: '#1D9E75',
-      bg: '#ECFDF5',
+      color: '#0F172A',
+      bg: '#F0F0EE',
     },
     {
       icon: (
@@ -926,13 +926,13 @@ function EmptyState({ setTab }) {
       {/* Icon graphic */}
       <div style={{
         width: 72, height: 72, borderRadius: '50%',
-        background: 'linear-gradient(135deg, #E6F7F1 0%, #EFF6FF 100%)',
-        border: '2px solid #1D9E7530',
+        background: 'linear-gradient(135deg, #F0F0EE 0%, #E8E8E6 100%)',
+        border: '2px solid rgba(15,23,42,0.10)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 20,
-        boxShadow: '0 4px 24px rgba(29,158,117,0.12)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
       }}>
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4l-5 5-4-4-3 3"/>
         </svg>
       </div>
@@ -970,10 +970,10 @@ function EmptyState({ setTab }) {
       {/* CTA */}
       {setTab && (
         <button onClick={() => setTab('simulate')} style={{
-          background: '#1D9E75', color: '#fff',
+          background: '#0F172A', color: '#fff',
           border: 'none', borderRadius: 10, padding: '12px 28px',
           fontSize: 13, fontWeight: 700, cursor: 'pointer',
-          boxShadow: '0 4px 16px rgba(29,158,117,0.35)',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
           letterSpacing: '-0.01em',
         }}>
           시뮬레이션 실행하기 →
@@ -1000,7 +1000,7 @@ export default function ResultPanel({ tab, saveReport }) {
                 const runNo = idx>=0 ? simLogs.length - idx : null
                 const log = simLogs[idx]
                 return runNo ? (
-                  <span style={{fontSize:10,background:'#E6F7F1',border:'1px solid #1D9E75',color:'#1D9E75',borderRadius:4,padding:'1px 6px',fontWeight:700}}>
+                  <span style={{fontSize:10,background:'#0F172A',border:'1px solid #0F172A',color:'#fff',borderRadius:4,padding:'1px 6px',fontWeight:700}}>
                     Run #{runNo}
                   </span>
                 ) : null
@@ -1101,12 +1101,12 @@ export default function ResultPanel({ tab, saveReport }) {
                         cursor:'pointer',
                         transition:'background 0.15s',
                       }}
-                      onMouseEnter={e=>e.currentTarget.style.background='#E6F7F1'}
-                      onMouseLeave={e=>e.currentTarget.style.background=isActive?'#E6F7F1':i%2===0?'#fff':'#fafafa'}
+                      onMouseEnter={e=>e.currentTarget.style.background='#F0F0EE'}
+                      onMouseLeave={e=>e.currentTarget.style.background=isActive?'#F0F0EE':i%2===0?'#fff':'#fafafa'}
                     >
-                      <td style={{padding:'8px 10px',fontWeight:800,color:'#1D9E75',whiteSpace:'nowrap'}}>
+                      <td style={{padding:'8px 10px',fontWeight:800,color:'#0F172A',whiteSpace:'nowrap'}}>
                         #{simLogs.length - ([...simLogs].reverse().findIndex(l=>l.id===log.id))}
-                        {isActive && <span style={{fontSize:8,background:'#1D9E75',color:'#fff',borderRadius:3,padding:'1px 4px',marginLeft:4}}>현재</span>}
+                        {isActive && <span style={{fontSize:8,background:'#0F172A',color:'#fff',borderRadius:3,padding:'1px 4px',marginLeft:4}}>현재</span>}
                       </td>
                       <td style={{padding:'8px 10px',maxWidth:140,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontWeight:500}}>
                         {log.scenario||log.project}
