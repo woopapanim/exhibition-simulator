@@ -22,11 +22,11 @@ function EditableVal({ value, unit, min, max, onChange }) {
         onBlur={commit}
         onKeyDown={e=>{ if(e.key==='Enter') commit(); if(e.key==='Escape') setEditing(false) }}
         style={{
-          width:46, padding:'1px 4px', fontSize:12, fontWeight:700,
-          border:'1.5px solid #1D9E75', borderRadius:5, outline:'none',
-          textAlign:'right', color:'#111827',
+          width:46, padding:'1px 4px', fontSize:14, fontWeight:500,
+          border:'2px solid #18181b', borderRadius:6, outline:'none',
+          textAlign:'right', color:'#09090b', fontFamily:'Inter,sans-serif',
         }}/>
-      <span style={{fontSize:11,color:'#6B7280'}}>{unit}</span>
+      <span style={{fontSize:11,color:'#71717a'}}>{unit}</span>
     </span>
   )
   return (
@@ -114,7 +114,7 @@ export default function SimPanel({
                 onChange={e=>setSimRange(p=>({...p,start:+e.target.value,end:Math.max(+e.target.value,p.end)}))}>
                 {SLOTS.map((l,i)=><option key={i} value={i}>{l}</option>)}
               </select>
-              <span style={{fontSize:10,color:'#ccc',flexShrink:0}}>—</span>
+              <span style={{fontSize:10,color:'var(--color-border)',flexShrink:0}}>—</span>
               <select className="sim-ctrl-select" value={simRange.end}
                 disabled={simStatus==='running'||simStatus==='paused'}
                 onChange={e=>setSimRange(p=>({...p,end:+e.target.value,start:Math.min(p.start,+e.target.value)}))}>
@@ -155,52 +155,51 @@ export default function SimPanel({
             </button>
             {simStatus==='running' && (
               <div className="sim-ctrl-status">
-                ▶ {SLOTS[runningSlot]} &nbsp;
-                <span style={{fontSize:10,fontWeight:400,opacity:0.7}}>{runningSlot-simRange.start+1}/{simRange.end-simRange.start+1}</span>
+                ▶ {SLOTS[runningSlot]}&nbsp;
+                <span style={{fontSize:10,fontWeight:400,color:'var(--color-text-muted)'}}>{runningSlot-simRange.start+1}/{simRange.end-simRange.start+1}</span>
               </div>
             )}
             {simStatus==='paused' && <div className="sim-ctrl-status paused">⏸ 일시정지</div>}
 
             {/* 완료 상태 표시 */}
             {simStatus==='done' && (
-              <div style={{marginTop:6,padding:'6px 8px',borderRadius:7,background:'#ECFDF5',border:'1px solid #A7F3D0',fontSize:11,color:'#059669',fontWeight:600,textAlign:'center',letterSpacing:'0.02em'}}>
-                완료
-              </div>
+              <div className="sim-ctrl-status done">완료</div>
             )}
 
             {/* ── 실행 중 진행 상태 ── */}
             {(simStatus==='running'||simStatus==='paused') && (
               <div style={{
-                marginTop:8, padding:'10px 12px', borderRadius:10,
-                background:'#F9FAFB', border:'1px solid var(--color-border)',
+                marginTop:8, padding:'10px 12px', borderRadius:4,
+                background:'var(--color-bg-section)', border:'none',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.06)',
               }}>
                 {/* 슬롯 + 시간 */}
                 <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
-                  <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>
+                  <span style={{fontSize:13,fontWeight:500,color:'var(--color-text)'}}>
                     {SLOTS[runningSlot]}
                     {simRange.start!==simRange.end && (
-                      <span style={{fontSize:10,fontWeight:400,color:'#9CA3AF',marginLeft:5}}>
+                      <span style={{fontSize:11,fontWeight:400,color:'var(--color-text-muted)',marginLeft:5}}>
                         {runningSlot-simRange.start+1}/{simRange.end-simRange.start+1}
                       </span>
                     )}
                   </span>
-                  <span style={{fontSize:11,fontWeight:600,color:'#6B7280',fontVariantNumeric:'tabular-nums'}}>
+                  <span style={{fontSize:12,fontWeight:400,color:'var(--color-text-secondary)',fontVariantNumeric:'tabular-nums'}}>
                     {dispStats?.simTimeDisplay ?? '00:00'}
                   </span>
                 </div>
                 {/* 방문객 + 진행률 바 */}
                 <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
-                  <span style={{fontSize:11,color:'#374151',flexShrink:0}}>
-                    <span style={{fontWeight:700}}>{dispStats?.slotVisitors ?? 0}</span>
-                    <span style={{color:'#9CA3AF'}}>/{dispStats?.slotTotal ?? 0}명</span>
+                  <span style={{fontSize:12,color:'var(--color-text)',flexShrink:0}}>
+                    <span style={{fontWeight:500}}>{dispStats?.slotVisitors ?? 0}</span>
+                    <span style={{color:'var(--color-text-muted)'}}>/{dispStats?.slotTotal ?? 0}명</span>
                   </span>
-                  <div style={{flex:1,height:4,background:'#E5E7EB',borderRadius:2,overflow:'hidden'}}>
-                    <div style={{height:'100%',borderRadius:2,background:'#1D9E75',width:`${dispStats?.slotProgress ?? 0}%`,transition:'width 0.3s'}}/>
+                  <div className="prog-bar" style={{flex:1}}>
+                    <div className="prog-fill primary" style={{width:`${dispStats?.slotProgress ?? 0}%`}}/>
                   </div>
-                  <span style={{fontSize:10,color:'#1D9E75',fontWeight:700,flexShrink:0}}>{dispStats?.slotProgress ?? 0}%</span>
+                  <span style={{fontSize:11,color:'var(--color-text)',fontWeight:500,flexShrink:0}}>{dispStats?.slotProgress ?? 0}%</span>
                 </div>
                 {simStatus==='paused' && (
-                  <div style={{fontSize:10,color:'#D97706',fontWeight:600,textAlign:'center'}}>⏸ 일시정지</div>
+                  <div style={{fontSize:12,color:'var(--color-warning)',fontWeight:500,textAlign:'center',letterSpacing:'0.04em'}}>일시정지</div>
                 )}
               </div>
             )}
@@ -217,46 +216,32 @@ export default function SimPanel({
             position:'absolute', right:16, top:16, zIndex:22,
             display:'flex', flexDirection:'column', gap:6,
           }}>
-            {/* 운영설정 아이콘 */}
-            <button onClick={() => togglePanel('slot')} title="운영 설정" style={{
-              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
-              background: showSlotPanel ? '#1D9E75' : '#fff',
-              color: showSlotPanel ? '#fff' : '#6B7280',
-              cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
-              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
-              fontSize:16, transition:'all 0.15s',
-            }}>⚙</button>
+            {/* 운영설정 아이콘 — FAB */}
+            <button onClick={() => togglePanel('slot')} title="운영 설정"
+              className={`btn-fab${showSlotPanel?' active':''}`}>
+              <span className="material-icons">settings</span>
+            </button>
             {/* 실시간 통계 아이콘 */}
-            <button onClick={() => togglePanel('stats')} title="실시간 통계" style={{
-              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
-              background: showStats ? '#1D9E75' : '#fff',
-              color: showStats ? '#fff' : '#6B7280',
-              cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
-              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
-              transition:'all 0.15s',
-            }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/>
-              </svg>
+            <button onClick={() => togglePanel('stats')} title="실시간 통계"
+              className={`btn-fab${showStats?' active':''}`}>
+              <span className="material-icons">bar_chart</span>
             </button>
             {/* 런 히스토리 아이콘 */}
-            <button onClick={() => togglePanel('history')} title="Run History" style={{
-              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
-              background: showHistory ? '#1D9E75' : '#fff',
-              color: showHistory ? '#fff' : simLogs.length > 0 ? '#6B7280' : '#D1D5DB',
-              cursor: simLogs.length > 0 ? 'pointer' : 'default',
-              display:'flex', alignItems:'center', justifyContent:'center',
-              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
-              fontSize:15, transition:'all 0.15s', position:'relative',
-            }}>
-              ☰
+            <button onClick={() => togglePanel('history')} title="Run History"
+              className={`btn-fab${showHistory?' active':''}`}
+              style={{
+                color: simLogs.length > 0 ? undefined : '#d4d4d8',
+                cursor: simLogs.length > 0 ? 'pointer' : 'default',
+                position:'relative',
+              }}>
+              <span className="material-icons">history</span>
               {simLogs.length > 0 && (
                 <span style={{
-                  position:'absolute', top:-4, right:-4,
-                  background: showHistory ? '#fff' : '#1D9E75',
-                  color: showHistory ? '#1D9E75' : '#fff',
-                  borderRadius:99, fontSize:8, fontWeight:700,
-                  minWidth:14, height:14, display:'flex', alignItems:'center', justifyContent:'center',
+                  position:'absolute', top:-3, right:-3,
+                  background: showHistory ? '#fff' : '#18181b',
+                  color: showHistory ? '#18181b' : '#fff',
+                  borderRadius:99, fontSize:9, fontWeight:500,
+                  minWidth:16, height:16, display:'flex', alignItems:'center', justifyContent:'center',
                   padding:'0 3px', lineHeight:1,
                 }}>{simLogs.length}</span>
               )}
@@ -444,10 +429,10 @@ export default function SimPanel({
                   <div style={{fontWeight:600,color:'#333',marginBottom:4}}>{r.label}</div>
                   <div style={{display:'flex',flexWrap:'wrap',gap:'4px 12px',color:'#555'}}>
                     <span>관람객 <strong>{r.visitors}명</strong></span>
-                    <span>스킵율 <strong style={{color:r.skipRate>30?'#a32d2d':r.skipRate>15?'#633806':'#0f6e56'}}>{r.skipRate}%</strong></span>
+                    <span>스킵율 <strong style={{color:r.skipRate>30?'#ef4444':r.skipRate>15?'#d97706':'#16a34a'}}>{r.skipRate}%</strong></span>
                     <span>체류 <strong>{r.avgDwell>0?r.avgDwell+'초':'-'}</strong></span>
-                    <span>몰입 <strong style={{color:'#534AB7'}}>{r.engIdx}</strong></span>
-                    {r.bottlenecks>0 && <span>병목 <strong style={{color:'#a32d2d'}}>{r.bottlenecks}건</strong></span>}
+                    <span>몰입 <strong style={{color:'#7c3aed'}}>{r.engIdx}</strong></span>
+                    {r.bottlenecks>0 && <span>병목 <strong style={{color:'#ef4444'}}>{r.bottlenecks}건</strong></span>}
                   </div>
                 </div>
               ))}
@@ -477,7 +462,7 @@ export default function SimPanel({
                 flexShrink:0,
               }}>
                 <span style={{fontSize:12,fontWeight:600,color:'var(--color-text)'}}>Run History</span>
-                <span style={{fontSize:10,color:'#9CA3AF'}}>{simLogs.length}개</span>
+                <span style={{fontSize:10,color:'#a1a1aa'}}>{simLogs.length}개</span>
               </div>
               {/* 목록 */}
               <div style={{overflowY:'auto',padding:'10px 12px',display:'flex',flexDirection:'column',gap:5}}>
@@ -486,17 +471,17 @@ export default function SimPanel({
                   const isActive = reportData && log.id === reportData._logId
                   return (
                     <div key={log.id} style={{
-                      background: isActive ? '#ECFDF5' : '#fff',
+                      background: isActive ? '#f0fdf4' : '#fff',
                       border: `1px solid ${isActive?'#6EE7B7':'#E5E7EB'}`,
                       borderRadius:10, overflow:'hidden',
                     }}>
                       <div style={{display:'flex',alignItems:'flex-start',gap:6,padding:'8px 10px 7px'}}>
-                        <span style={{fontSize:9,fontWeight:800,color:'#1D9E75',flexShrink:0,marginTop:1}}>#{runNo}</span>
+                        <span style={{fontSize:9,fontWeight:800,color:'#18181b',flexShrink:0,marginTop:1}}>#{runNo}</span>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:10.5,fontWeight:700,color:'#111827',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                          <div style={{fontSize:10.5,fontWeight:700,color:'#09090b',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
                             {log.scenario||log.project||'시나리오'}
                           </div>
-                          <div style={{fontSize:9,color:'#9CA3AF',marginTop:1.5}}>
+                          <div style={{fontSize:9,color:'#a1a1aa',marginTop:1.5}}>
                             {log.rangeLabel} · {log.ts||'-'}
                           </div>
                         </div>
@@ -518,7 +503,7 @@ export default function SimPanel({
                       </div>
                       <div style={{display:'flex',gap:6,padding:'0 8px 8px'}}>
                         <button onClick={()=>onAnalyzeLog?.(log)}
-                          style={{flex:1,padding:'6px 0',border:'1px solid #1D9E75',borderRadius:7,background:'#1D9E75',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
+                          style={{flex:1,padding:'6px 0',border:'none',borderRadius:4,background:'#18181b',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
                           Analyze
                         </button>
                         <button onClick={()=>{
@@ -532,7 +517,7 @@ export default function SimPanel({
                             _logId:log.id,
                           })
                           setTab('report')
-                        }} style={{flex:1,padding:'6px 0',border:'1px solid #7C3AED',borderRadius:7,background:'#7C3AED',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
+                        }} style={{flex:1,padding:'6px 0',border:'none',borderRadius:4,background:'#7c3aed',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
                           Insights
                         </button>
                       </div>
@@ -563,7 +548,7 @@ export default function SimPanel({
               }}>
                 <span style={{fontSize:12,fontWeight:600,color:'var(--color-text)'}}>실시간 통계</span>
                 {(simStatus==='running'||simStatus==='paused') && (
-                  <span style={{fontSize:9,fontWeight:700,color:'#1D9E75',letterSpacing:'0.05em',textTransform:'uppercase'}}>
+                  <span style={{fontSize:9,fontWeight:700,color:'#18181b',letterSpacing:'0.05em',textTransform:'uppercase'}}>
                     {simStatus==='paused'?'⏸ 일시정지':'● LIVE'}
                   </span>
                 )}
@@ -582,13 +567,13 @@ export default function SimPanel({
                   <div key={s.label} style={{
                     padding:'10px 12px', borderRadius:10, aspectRatio:'1/1',
                     display:'flex', flexDirection:'column', justifyContent:'space-between',
-                    background: s.warn ? '#FEF2F2' : s.ok ? '#ECFDF5' : '#F9FAFB',
-                    border: `1px solid ${s.warn ? '#FECACA' : s.ok ? '#A7F3D0' : '#F0F0F0'}`,
+                    background: s.warn ? '#fef2f2' : s.ok ? '#f0fdf4' : '#fafafa',
+                    border: `1px solid ${s.warn ? '#fecaca' : s.ok ? '#86efac' : '#F0F0F0'}`,
                   }}>
-                    <div style={{fontSize:9,fontWeight:600,color:'#9CA3AF',letterSpacing:'0.04em',textTransform:'uppercase'}}>{s.label}</div>
+                    <div style={{fontSize:9,fontWeight:600,color:'#a1a1aa',letterSpacing:'0.04em',textTransform:'uppercase'}}>{s.label}</div>
                     <div style={{
                       fontSize:20, fontWeight:700, lineHeight:1,
-                      color: s.warn ? '#DC2626' : s.ok ? '#059669' : '#111827',
+                      color: s.warn ? '#ef4444' : s.ok ? '#16a34a' : '#09090b',
                       textAlign:'right', whiteSpace:'nowrap',
                     }}>{s.val}</div>
                   </div>
@@ -638,15 +623,15 @@ export default function SimPanel({
                 <div style={{borderTop:'1px solid rgba(0,0,0,0.07)', paddingTop:8, marginBottom:6}}>
                   <div style={{fontWeight:600, color:'#555', marginBottom:4, fontSize:11}}>방문객 상태</div>
                   <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>
-                    <span style={{width:10, height:10, borderRadius:'50%', border:'2px solid #1D9E75', display:'inline-block', flexShrink:0, boxSizing:'border-box'}}/>
+                    <span style={{width:10, height:10, borderRadius:'50%', border:'2px solid #18181b', display:'inline-block', flexShrink:0, boxSizing:'border-box'}}/>
                     <span style={{color:'#333'}}>체험 중</span>
                   </div>
                   <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>
-                    <span style={{width:10, height:10, borderRadius:'50%', background:'#E24B4A', display:'inline-block', flexShrink:0}}/>
+                    <span style={{width:10, height:10, borderRadius:'50%', background:'#ef4444', display:'inline-block', flexShrink:0}}/>
                     <span style={{color:'#333'}}>대기 중</span>
                   </div>
                   <div style={{display:'flex', alignItems:'center', gap:6, marginBottom:3}}>
-                    <span style={{width:10, height:10, borderRadius:'50%', background:'#EF9F27', display:'inline-block', flexShrink:0}}/>
+                    <span style={{width:10, height:10, borderRadius:'50%', background:'#d97706', display:'inline-block', flexShrink:0}}/>
                     <span style={{color:'#333'}}>스킵 — 대기 포기 후 이동</span>
                   </div>
                 </div>
@@ -667,7 +652,7 @@ export default function SimPanel({
               <button className="canvas-zoom-btn" onClick={onZoomOut} title="축소">−</button>
               <div style={{width:1,height:16,background:'rgba(0,0,0,0.1)',margin:'0 2px'}}/>
               <button className="canvas-zoom-btn" onClick={onTogglePan} title="이동"
-                style={{background:panMode?'rgba(29,158,117,0.15)':undefined, color:panMode?'#1D9E75':undefined}}>
+                style={{background:panMode?'rgba(9,9,11,0.06)':undefined, color:panMode?'#18181b':undefined}}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
               </button>
               <div style={{width:1,height:16,background:'rgba(0,0,0,0.1)',margin:'0 2px'}}/>

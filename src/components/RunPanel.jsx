@@ -63,7 +63,7 @@ export default function RunPanel({
                 onChange={e=>setSimRange(p=>({...p,start:+e.target.value,end:Math.max(+e.target.value,p.end)}))}>
                 {SLOTS.map((l,i)=><option key={i} value={i}>{l}</option>)}
               </select>
-              <span style={{fontSize:10,color:'#9CA3AF'}}>~</span>
+              <span style={{fontSize:10,color:'var(--color-text-muted)'}}>~</span>
               <select className="sim-ctrl-select" value={simRange.end}
                 disabled={simStatus==='running'||simStatus==='paused'}
                 onChange={e=>setSimRange(p=>({...p,end:+e.target.value,start:Math.min(p.start,+e.target.value)}))}>
@@ -108,7 +108,7 @@ export default function RunPanel({
           {simStatus==='running' && (
             <div className="sim-ctrl-status">
               ▶ {SLOTS[runningSlot]}<br/>
-              <span style={{fontSize:9,color:'#9CA3AF'}}>{runningSlot-simRange.start+1} / {simRange.end-simRange.start+1} 슬롯</span>
+              <span style={{fontSize:9,color:'var(--color-text-muted)'}}>{runningSlot-simRange.start+1} / {simRange.end-simRange.start+1} 슬롯</span>
             </div>
           )}
           {simStatus==='done' && (
@@ -124,7 +124,7 @@ export default function RunPanel({
 
           {/* 시간대 탭 */}
           <div className="time-bar" style={{marginBottom:8}}>
-            <span style={{fontSize:11,color:'#9CA3AF',flexShrink:0}}>시간대:</span>
+            <span style={{fontSize:11,color:'var(--color-text-muted)',flexShrink:0}}>시간대:</span>
             {SLOTS.map((label,i)=>(
               <button key={i} className={`tb${slot===i?' active':''}`}
                 onClick={()=>{setSlot(i);if(simStatus!=='idle')stopSim(false)}}>{label}</button>
@@ -294,38 +294,38 @@ export default function RunPanel({
               </span>
             ))}
             {slotCfg.docent.enabled && <span className="li"><span className="ld" style={{background:DOCENT_COLOR}}/>🎓 도슨트</span>}
-            <span className="li"><span className="ld" style={{background:'#E24B4A'}}/>대기중</span>
-            <span className="li"><span className="ld" style={{background:'#EF9F27'}}/>스킵</span>
-            <span className="li"><span style={{width:8,height:8,borderRadius:'50%',border:'2px solid #1D9E75',display:'inline-block'}}/> 체험중</span>
+            <span className="li"><span className="ld" style={{background:'#ef4444'}}/>대기중</span>
+            <span className="li"><span className="ld" style={{background:'#d97706'}}/>스킵</span>
+            <span className="li"><span style={{width:8,height:8,borderRadius:'50%',border:'2px solid #18181b',display:'inline-block'}}/> 체험중</span>
           </div>
 
           {/* 슬롯 결과 패널 */}
           {slotResults.length>0 && (
-            <div style={{borderRadius:14,overflow:'hidden',marginTop:8,background:'#fff',boxShadow:'0 1px 3px rgba(0,0,0,0.05)',border:'1px solid rgba(0,0,0,0.06)'}}>
-              <div style={{padding:'9px 14px',background:'#FAFAFA',borderBottom:'1px solid rgba(0,0,0,0.07)',fontSize:11,fontWeight:600,color:'#111',display:'flex',alignItems:'center',gap:6}}>
+            <div className="card-base" style={{marginTop:8,overflow:'hidden',padding:0}}>
+              <div style={{padding:'9px 14px',borderBottom:'1px solid var(--color-border)',fontSize:11,fontWeight:600,color:'var(--color-text)',display:'flex',alignItems:'center',gap:6,background:'var(--color-bg-section)'}}>
                 {simStatus==='done'?'✅':'🔄'} 시뮬레이션 결과
-                <span style={{fontSize:10,color:'#9CA3AF',fontWeight:400}}>
+                <span style={{fontSize:10,color:'var(--color-text-muted)',fontWeight:400}}>
                   {SLOTS[simRange.start]}{simRange.start!==simRange.end?` ~ ${SLOTS[simRange.end]}`:''}
                 </span>
               </div>
               <div style={{overflowX:'auto'}}>
-                <table style={{width:'100%',borderCollapse:'collapse',fontSize:11}}>
+                <table className="data-table rpt-table">
                   <thead>
-                    <tr style={{background:'#F7F7F7'}}>
+                    <tr>
                       {['시간대','관람객','스킵율','평균체류','몰입 강도','병목'].map(h=>(
-                        <th key={h} style={{padding:'5px 10px',textAlign:'left',color:'#9CA3AF',fontWeight:600,fontSize:10,borderBottom:'1px solid rgba(0,0,0,0.07)'}}>{h}</th>
+                        <th key={h}>{h}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
                     {slotResults.map(r=>(
-                      <tr key={r.slot} style={{borderBottom:'.5px solid rgba(0,0,0,0.06)'}}>
-                        <td style={{padding:'5px 10px',fontWeight:500}}>{r.label}</td>
-                        <td style={{padding:'5px 10px'}}>{r.visitors}명</td>
-                        <td style={{padding:'5px 10px',color:r.skipRate>30?'#a32d2d':r.skipRate>15?'#633806':'#0f6e56',fontWeight:500}}>{r.skipRate}%</td>
-                        <td style={{padding:'5px 10px'}}>{r.avgDwell>0?r.avgDwell+'초':'-'}</td>
-                        <td style={{padding:'5px 10px',color:'#534AB7',fontWeight:500}}>{r.engIdx}</td>
-                        <td style={{padding:'5px 10px',color:r.bottlenecks>0?'#a32d2d':'#9CA3AF'}}>{r.bottlenecks}건</td>
+                      <tr key={r.slot}>
+                        <td style={{fontWeight:500}}>{r.label}</td>
+                        <td>{r.visitors}명</td>
+                        <td style={{color:r.skipRate>30?'var(--color-error)':r.skipRate>15?'var(--color-warning)':'var(--color-success)',fontWeight:500}}>{r.skipRate}%</td>
+                        <td>{r.avgDwell>0?r.avgDwell+'초':'-'}</td>
+                        <td style={{color:'var(--color-purple)',fontWeight:500}}>{r.engIdx}</td>
+                        <td style={{color:r.bottlenecks>0?'var(--color-error)':'var(--color-text-muted)'}}>{r.bottlenecks}건</td>
                       </tr>
                     ))}
                   </tbody>
@@ -338,32 +338,32 @@ export default function RunPanel({
           <div className="skip-panel">
             <div className="skip-head">
               <span className="skip-title">스킵율 · 몰입 강도 인덱스</span>
-              <span style={{fontSize:11,color:'#9CA3AF'}}>대기 {slotCfg.skipThresh}초 초과 시 스킵</span>
+              <span style={{fontSize:11,color:'var(--color-text-muted)'}}>대기 {slotCfg.skipThresh}초 초과 시 스킵</span>
             </div>
             <div className="skip-row-head">
               <span>존 / 미디어</span><span>스킵</span><span>체험</span><span>스킵율</span><span>몰입 강도</span>
             </div>
             {skipTable.length===0 ? (
-              <div style={{padding:'10px 14px',fontSize:12,color:'#9CA3AF'}}>시뮬레이션을 시작하면 집계돼요.</div>
+              <div style={{padding:'10px 14px',fontSize:12,color:'#a1a1aa'}}>시뮬레이션을 시작하면 집계돼요.</div>
             ) : skipTable.map(({zone,zs,rate,zEng,media})=>(
               <div key={zone.id}>
                 <div className="skip-row" style={{background:rate>50?'rgba(226,75,74,0.05)':rate>20?'rgba(239,159,39,0.04)':'transparent'}}>
                   <span style={{fontWeight:500}}>{zone.name}</span>
-                  <span style={{color:'#a32d2d'}}>{zs.skip}</span>
-                  <span style={{color:'#0f6e56'}}>{zs.exp}</span>
+                  <span style={{color:'var(--color-error)'}}>{zs.skip}</span>
+                  <span style={{color:'var(--color-success)'}}>{zs.exp}</span>
                   <span><span className={`idx-badge idx-${rate>50?'bad':rate>20?'warn':'good'}`}>{rate}% {rate>50?'위험':rate>20?'주의':'양호'}</span></span>
                   <span className="eng-badge">{zEng!=='-'?`★ ${zEng}`:'-'}</span>
                 </div>
                 {media.map(({m,ms,mr,mEng})=>(
-                  <div key={m.uid} className="skip-row" style={{background:'#F7F7F7'}}>
-                    <span style={{fontSize:11,color:'#9CA3AF',paddingLeft:10,display:'flex',alignItems:'center',gap:5}}><MediaIcon id={m.type} size={13} color={ALL_MT.find(t=>t.id===m.type)?.color||'#9CA3AF'}/> {m.label} <span style={{fontSize:10}}>({m.dwell}초)</span></span>
-                    <span style={{fontSize:11,color:'#a32d2d'}}>{ms.skip}</span>
-                    <span style={{fontSize:11,color:'#0f6e56'}}>{ms.exp}</span>
-                    <div>
-                      <div className="bar-wrap"><div className="bar-fill" style={{width:`${mr}%`,background:mr>50?'#E24B4A':mr>20?'#EF9F27':'#1D9E75'}}/></div>
-                      <span style={{fontSize:10,color:'#9CA3AF'}}>{mr}%</span>
+                  <div key={m.uid} className="skip-row" style={{background:'var(--color-bg-section)'}}>
+                    <span style={{fontSize:11,color:'var(--color-text-muted)',paddingLeft:10,display:'flex',alignItems:'center',gap:5}}><MediaIcon id={m.type} size={13} color={ALL_MT.find(t=>t.id===m.type)?.color||'#a1a1aa'}/> {m.label} <span style={{fontSize:10}}>({m.dwell}초)</span></span>
+                    <span style={{fontSize:11,color:'var(--color-error)'}}>{ms.skip}</span>
+                    <span style={{fontSize:11,color:'var(--color-success)'}}>{ms.exp}</span>
+                    <div className="prog-wrap">
+                      <div className="prog-bar"><div className={`prog-fill ${mr>50?'error':mr>20?'warn':'primary'}`} style={{width:`${mr}%`}}/></div>
+                      <span style={{fontSize:10,color:'var(--color-text-muted)'}}>{mr}%</span>
                     </div>
-                    <span style={{fontSize:11,color:'#534AB7',fontWeight:600}}>{mEng!=='-'?`★${mEng}`:'-'}</span>
+                    <span style={{fontSize:11,color:'var(--color-purple)',fontWeight:600}}>{mEng!=='-'?`★${mEng}`:'-'}</span>
                   </div>
                 ))}
               </div>
@@ -391,7 +391,7 @@ export default function RunPanel({
 
           <div className="heat-legend-section">
             <div className="heat-legend-title">스킵율</div>
-            {[{c:'#059669',bg:'#ECFDF5',l:'양호 (0~20%)'},{c:'#D97706',bg:'#FFFBEB',l:'주의 (21~50%)'},{c:'#DC2626',bg:'#FEF2F2',l:'위험 (>50%)'}].map(({c,bg,l})=>(
+            {[{c:'#16a34a',bg:'#f0fdf4',l:'양호 (0~20%)'},{c:'#d97706',bg:'#fffbeb',l:'주의 (21~50%)'},{c:'#ef4444',bg:'#fef2f2',l:'위험 (>50%)'}].map(({c,bg,l})=>(
               <div key={c} className="heat-legend-item">
                 <span className="heat-legend-dot" style={{background:bg,border:`1.5px solid ${c}`}}/>
                 <span>{l}</span>
@@ -420,7 +420,7 @@ export default function RunPanel({
         {/* 히트맵 메인 */}
         <div className="sim-main">
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
-            <span style={{fontSize:11,color:'#9CA3AF'}}>
+            <span style={{fontSize:11,color:'var(--color-text-muted)'}}>
               {heatTimeline.length===0
                 ? '시뮬레이션 후 누적 밀집도가 표시돼요.'
                 : '타임라인을 드래그해 시뮬레이션 과정을 재생하세요.'}

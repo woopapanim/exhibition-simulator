@@ -24,10 +24,10 @@ export default function ReportView({ data, visible = true }) {
   const allMedia = rzones.flatMap(z => z.media.map(m => ({ ...m, zoneName: zLabel(z) }))).sort((a,b) => b.skipRate-a.skipRate)
 
   const gradeOf = sr =>
-    sr>50 ? {g:'D',c:'#DC2626',bg:'#FEF2F2'} :
-    sr>20 ? {g:'C',c:'#D97706',bg:'#FFFBEB'} :
-    sr>10 ? {g:'B',c:'#2563EB',bg:'#EFF6FF'} :
-            {g:'A',c:'#059669',bg:'#ECFDF5'}
+    sr>50 ? {g:'D',c:'#ef4444',bg:'#fef2f2'} :
+    sr>20 ? {g:'C',c:'#d97706',bg:'#fffbeb'} :
+    sr>10 ? {g:'B',c:'#3b82f6',bg:'#eff6ff'} :
+            {g:'A',c:'#16a34a',bg:'#f0fdf4'}
 
   const starsOf = eng => {
     if (eng === null) return '-'
@@ -46,9 +46,9 @@ export default function ReportView({ data, visible = true }) {
       data: {
         labels: rzones.map(lb),
         datasets: [
-          { label:'스킵 건수', data:rzones.map(z=>z.skipCount||0), backgroundColor:rzones.map(z=>z.skipRate>=50?'rgba(226,75,74,0.7)':z.skipRate>=20?'rgba(239,159,39,0.6)':'rgba(55,138,221,0.6)'), borderRadius:4, yAxisID:'y' },
-          { label:'스킵율(%)', data:rzones.map(z=>z.skipRate),     type:'line', borderColor:'#EF9F27', backgroundColor:'rgba(239,159,39,0.1)', pointRadius:4, borderWidth:2, yAxisID:'y1' },
-          { label:'몰입 강도',    data:rzones.map(z=>z.engIdx||0),    type:'line', borderColor:'#534AB7', backgroundColor:'rgba(83,74,183,0.1)',  pointRadius:4, borderWidth:2, yAxisID:'y2' },
+          { label:'스킵 건수', data:rzones.map(z=>z.skipCount||0), backgroundColor:rzones.map(z=>z.skipRate>=50?'rgba(239,68,68,0.7)':z.skipRate>=20?'rgba(217,119,6,0.6)':'rgba(24,24,27,0.5)'), borderRadius:4, yAxisID:'y' },
+          { label:'스킵율(%)', data:rzones.map(z=>z.skipRate),     type:'line', borderColor:'#d97706', backgroundColor:'rgba(217,119,6,0.1)', pointRadius:4, borderWidth:2, yAxisID:'y1' },
+          { label:'몰입 강도',    data:rzones.map(z=>z.engIdx||0),    type:'line', borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.1)',  pointRadius:4, borderWidth:2, yAxisID:'y2' },
         ],
       },
       options: {
@@ -56,8 +56,8 @@ export default function ReportView({ data, visible = true }) {
         plugins: { legend: { display:true, labels:{ font:{size:10}, boxWidth:12 } } },
         scales: {
           y:  { beginAtZero:true, grid:{color:'rgba(0,0,0,0.05)'}, ticks:{color:'#888',font:{size:10}} },
-          y1: { beginAtZero:true, max:100, position:'right', grid:{display:false}, ticks:{color:'#EF9F27',font:{size:10},callback:v=>v+'%'} },
-          y2: { beginAtZero:true, max:5,   position:'right', grid:{display:false}, ticks:{color:'#534AB7',font:{size:10}}, display:false },
+          y1: { beginAtZero:true, max:100, position:'right', grid:{display:false}, ticks:{color:'#d97706',font:{size:10},callback:v=>v+'%'} },
+          y2: { beginAtZero:true, max:5,   position:'right', grid:{display:false}, ticks:{color:'#7c3aed',font:{size:10}}, display:false },
         },
       },
     })
@@ -102,16 +102,14 @@ export default function ReportView({ data, visible = true }) {
                   <td style={{fontWeight:500}}>{r.label}</td>
                   <td>{r.visitors}명</td>
                   <td>
-                    <div style={{display:'flex',alignItems:'center',gap:5}}>
-                      <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:40}}>
-                        <div style={{height:'100%',width:`${Math.min(100,r.skipRate)}%`,background:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',borderRadius:2}}/>
-                      </div>
-                      <span style={{color:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
+                    <div className="prog-wrap">
+                      <div className="prog-bar"><div className={`prog-fill ${r.skipRate>30?'error':r.skipRate>10?'warn':'success'}`} style={{width:`${Math.min(100,r.skipRate)}%`}}/></div>
+                      <span style={{color:r.skipRate>30?'var(--color-error)':r.skipRate>10?'var(--color-warning)':'var(--color-success)',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
                     </div>
                   </td>
                   <td>{r.avgDwell}초</td>
-                  <td style={{color:'#7C3AED'}}>{r.engIdx!=='-' ? `★${r.engIdx}` : '-'}</td>
-                  <td style={{color:r.bottlenecks>0?'#DC2626':'#888'}}>{r.bottlenecks}건</td>
+                  <td style={{color:'var(--color-purple)'}}>{r.engIdx!=='-' ? `★${r.engIdx}` : '-'}</td>
+                  <td style={{color:r.bottlenecks>0?'var(--color-error)':'var(--color-text-muted)'}}>{r.bottlenecks}건</td>
                 </tr>
               ))}
             </tbody>
@@ -138,22 +136,20 @@ export default function ReportView({ data, visible = true }) {
               {[...rzones].sort((a,b) => b.skipRate-a.skipRate).map(z => {
                 const g = gradeOf(z.skipRate)
                 const densLv = z.heatVal>500 ? '높음' : z.heatVal>100 ? '보통' : '낮음'
-                const densC  = z.heatVal>500 ? '#DC2626' : z.heatVal>100 ? '#D97706' : '#888'
+                const densC  = z.heatVal>500 ? 'var(--color-error)' : z.heatVal>100 ? 'var(--color-warning)' : 'var(--color-text-muted)'
                 return (
                   <tr key={z.id}>
                     <td style={{fontWeight:600,textAlign:'left'}}>{zLabel(z)}</td>
                     <td>
-                      <div style={{display:'flex',alignItems:'center',gap:5}}>
-                        <div style={{flex:1,height:5,background:'#f0f0f0',borderRadius:3,overflow:'hidden',minWidth:50}}>
-                          <div style={{height:'100%',width:`${Math.min(100,z.skipRate)}%`,background:z.skipRate>50?'#DC2626':z.skipRate>20?'#D97706':'#059669',borderRadius:3}}/>
-                        </div>
-                        <span style={{fontWeight:700,fontSize:12,color:z.skipRate>50?'#DC2626':z.skipRate>20?'#D97706':'#059669'}}>{z.skipRate}%</span>
+                      <div className="prog-wrap">
+                        <div className="prog-bar" style={{minWidth:50,height:5}}><div className={`prog-fill ${z.skipRate>50?'error':z.skipRate>20?'warn':'success'}`} style={{width:`${Math.min(100,z.skipRate)}%`}}/></div>
+                        <span style={{fontWeight:700,fontSize:12,color:z.skipRate>50?'var(--color-error)':z.skipRate>20?'var(--color-warning)':'var(--color-success)'}}>{z.skipRate}%</span>
                       </div>
                     </td>
-                    <td style={{color:'#7C3AED',fontSize:11}}>{z.engIdx!==null ? starsOf(z.engIdx)+` (${z.engIdx})` : '-'}</td>
+                    <td style={{color:'var(--color-purple)',fontSize:11}}>{z.engIdx!==null ? starsOf(z.engIdx)+` (${z.engIdx})` : '-'}</td>
                     <td style={{color:densC,fontSize:11,fontWeight:600}}>{densLv}</td>
-                    <td style={{fontSize:11,color:'#888'}}>{z.media.length}개</td>
-                    <td><span style={{display:'inline-block',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:700,background:g.bg,color:g.c}}>{g.g}</span></td>
+                    <td style={{fontSize:11,color:'var(--color-text-muted)'}}>{z.media.length}개</td>
+                    <td><span className={`badge ${g.g==='A'?'grade-a':g.g==='B'?'grade-b':g.g==='C'?'grade-c':'grade-d'}`}>{g.g}</span></td>
                   </tr>
                 )
               })}
@@ -167,7 +163,7 @@ export default function ReportView({ data, visible = true }) {
     {allMedia.length > 0 && (
       <div className="rpt-section">
         <div className="rpt-section-title">
-          미디어별 분석 <span style={{fontSize:10,fontWeight:400,color:'#888'}}>— 스킵율 높은 순</span>
+          미디어별 분석 <span style={{fontSize:10,fontWeight:400,color:'var(--color-text-muted)'}}>— 스킵율 높은 순</span>
         </div>
         <div style={{overflowX:'auto'}}>
           <table className="rpt-table">
@@ -183,29 +179,27 @@ export default function ReportView({ data, visible = true }) {
                   <tr key={m.uid}>
                     <td style={{textAlign:'left'}}>
                       <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
-                        <span style={{width:10,height:10,borderRadius:3,background:m.bg||'#eee',border:`1.5px solid ${m.color||'#ccc'}`,flexShrink:0}}/>
+                        <span className="seg-dot" style={{background:m.bg||'#eee',border:`1.5px solid ${m.color||'#ccc'}`}}/>
                         <span style={{fontWeight:500,fontSize:12}}>{m.name}</span>
                       </span>
                     </td>
-                    <td style={{textAlign:'left',fontSize:11,color:'#888'}}>{m.zoneName}</td>
+                    <td style={{textAlign:'left',fontSize:11,color:'var(--color-text-muted)'}}>{m.zoneName}</td>
                     <td style={{fontSize:11}}>{m.exposure>0 ? `${m.exposure}회` : '-'}</td>
                     <td>
                       {m.exposure > 0 ? (
-                        <div style={{display:'flex',alignItems:'center',gap:5}}>
-                          <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:36}}>
-                            <div style={{height:'100%',width:`${Math.min(100,m.skipRate)}%`,background:m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669',borderRadius:2}}/>
-                          </div>
-                          <span style={{fontWeight:700,fontSize:11,color:m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669'}}>{m.skipRate}%</span>
+                        <div className="prog-wrap">
+                          <div className="prog-bar"><div className={`prog-fill ${m.skipRate>50?'error':m.skipRate>20?'warn':'success'}`} style={{width:`${Math.min(100,m.skipRate)}%`}}/></div>
+                          <span style={{fontWeight:700,fontSize:11,color:m.skipRate>50?'var(--color-error)':m.skipRate>20?'var(--color-warning)':'var(--color-success)'}}>{m.skipRate}%</span>
                         </div>
-                      ) : <span style={{color:'#ccc',fontSize:11}}>-</span>}
+                      ) : <span style={{color:'var(--color-text-muted)',fontSize:11}}>-</span>}
                     </td>
-                    <td style={{fontSize:11,color:'#7C3AED',fontWeight:600}}>
-                      {m.engIdx != null ? `★${m.engIdx}` : <span style={{color:'#ccc'}}>-</span>}
+                    <td style={{fontSize:11,color:'var(--color-purple)',fontWeight:600}}>
+                      {m.engIdx != null ? `★${m.engIdx}` : <span style={{color:'var(--color-text-muted)'}}>-</span>}
                     </td>
                     <td>
                       {m.exposure > 0
-                        ? <span style={{display:'inline-block',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:700,background:g.bg,color:g.c}}>{g.g}</span>
-                        : <span style={{color:'#ccc',fontSize:11}}>-</span>
+                        ? <span className={`badge ${g.g==='A'?'grade-a':g.g==='B'?'grade-b':g.g==='C'?'grade-c':'grade-d'}`}>{g.g}</span>
+                        : <span style={{color:'var(--color-text-muted)',fontSize:11}}>-</span>
                       }
                     </td>
                   </tr>

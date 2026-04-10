@@ -32,15 +32,15 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
   const score = Math.round(s1 * 0.3 + s2 * 0.3 + s3 * 0.2 + s4 * 0.2)
 
   const grade = score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D'
-  const gradeColor = grade === 'A' ? '#059669' : grade === 'B' ? '#2563EB' : grade === 'C' ? '#D97706' : '#DC2626'
-  const gradeBg    = grade === 'A' ? '#ECFDF5' : grade === 'B' ? '#EFF6FF' : grade === 'C' ? '#FFFBEB' : '#FEF2F2'
+  const gradeColor = grade === 'A' ? '#16a34a' : grade === 'B' ? '#3b82f6' : grade === 'C' ? '#d97706' : '#ef4444'
+  const gradeBg    = grade === 'A' ? '#f0fdf4' : grade === 'B' ? '#eff6ff' : grade === 'C' ? '#fffbeb' : '#fef2f2'
   const gradeText  = grade === 'A' ? '우수한 전시 운영 상태입니다' : grade === 'B' ? '일부 개선으로 완성도를 높일 수 있습니다' : grade === 'C' ? '주요 지표에 개선이 필요합니다' : '즉각적인 개선 조치가 필요합니다'
 
   const subScores = [
-    { label: '동선 도달률', val: s1, color: '#0F172A' },
-    { label: '체험 전환율', val: s2, color: '#6366f1' },
-    { label: '혼잡도',     val: s3, color: '#F59E0B' },
-    { label: '참여도',     val: s4, color: '#7C3AED' },
+    { label: '동선 도달률', val: s1, color: '#18181b' },
+    { label: '체험 전환율', val: s2, color: '#3b82f6' },
+    { label: '혼잡도',     val: s3, color: '#d97706' },
+    { label: '참여도',     val: s4, color: '#7c3aed' },
   ]
 
   const metricPills = [
@@ -52,12 +52,13 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
 
   return (
     <div style={{
-      background: '#0F172A',
-      borderRadius: 14,
+      background: '#18181b',
+      borderRadius: 4,
       padding: '20px 24px',
       marginBottom: 16,
       position: 'relative',
       overflow: 'hidden',
+      boxShadow: '0 4px 5px rgba(0,0,0,.14), 0 1px 10px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.20)',
     }}>
       {/* subtle background accent */}
       <div style={{
@@ -73,7 +74,7 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
             fontSize: 52, fontWeight: 900, color: gradeColor,
             lineHeight: 1, letterSpacing: '-0.03em',
           }}>{score}</div>
-          <div style={{ fontSize: 10, color: '#64748B', fontWeight: 600, marginTop: 2 }}>/ 100</div>
+          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.6)', fontWeight: 400, marginTop: 2 }}>/ 100</div>
           <div style={{
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
             width: 36, height: 36, borderRadius: '50%',
@@ -86,10 +87,10 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
 
         {/* Right side */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#F1F5F9', marginBottom: 4 }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: '#fff', marginBottom: 4, letterSpacing: '0.0125em' }}>
             전시 건강도
           </div>
-          <div style={{ fontSize: 11, color: gradeColor, fontWeight: 600, marginBottom: 12 }}>
+          <div style={{ fontSize: 12, color: '#BBDEFB', fontWeight: 400, marginBottom: 12 }}>
             {gradeText}
           </div>
 
@@ -97,12 +98,12 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
             {metricPills.map(m => (
               <span key={m.label} style={{
-                background: '#1E293B', borderRadius: 20,
-                padding: '3px 10px', fontSize: 10, color: '#94A3B8',
-                border: '1px solid #334155',
+                background: 'rgba(255,255,255,0.12)', borderRadius: 4,
+                padding: '3px 10px', fontSize: 10, color: 'rgba(255,255,255,0.7)',
+                border: '1px solid rgba(255,255,255,0.2)',
               }}>
-                <span style={{ color: '#64748B' }}>{m.label} </span>
-                <strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{m.raw}</strong>
+                <span style={{ color: 'rgba(255,255,255,0.6)' }}>{m.label} </span>
+                <strong style={{ color: '#fff', fontWeight: 500 }}>{m.raw}</strong>
               </span>
             ))}
           </div>
@@ -111,8 +112,8 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {subScores.map(ss => (
               <div key={ss.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 9, color: '#64748B', fontWeight: 600, minWidth: 60, flexShrink: 0 }}>{ss.label}</span>
-                <div style={{ flex: 1, height: 4, background: '#1E293B', borderRadius: 2, overflow: 'hidden' }}>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.7)', fontWeight: 400, minWidth: 60, flexShrink: 0 }}>{ss.label}</span>
+                <div style={{ flex: 1, height: 3, background: 'rgba(255,255,255,0.18)', borderRadius: 2, overflow: 'hidden' }}>
                   <div style={{
                     height: '100%',
                     width: `${Math.min(100, ss.val)}%`,
@@ -121,7 +122,7 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
                     transition: 'width 0.4s ease',
                   }}/>
                 </div>
-                <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 700, minWidth: 30, textAlign: 'right' }}>{Math.round(ss.val)}</span>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.9)', fontWeight: 500, minWidth: 30, textAlign: 'right' }}>{Math.round(ss.val)}</span>
               </div>
             ))}
           </div>
@@ -146,9 +147,9 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
 
 // ── 개선 액션 플랜 constants ──
 const ACTION_PRIORITY = {
-  urgent:    { label: '긴급', color: '#DC2626', bg: '#FEF2F2', dot: '🔴' },
-  recommend: { label: '권장', color: '#D97706', bg: '#FFFBEB', dot: '🟡' },
-  maintain:  { label: '유지', color: '#059669', bg: '#ECFDF5', dot: '🟢' },
+  urgent:    { label: '긴급', color: '#ef4444', bg: '#fef2f2', dot: '🔴' },
+  recommend: { label: '권장', color: '#d97706', bg: '#fffbeb', dot: '🟡' },
+  maintain:  { label: '유지', color: '#16a34a', bg: '#f0fdf4', dot: '🟢' },
 }
 const ACTION_CATEGORY = {
   zone:     '구역 배치',
@@ -164,12 +165,11 @@ function ActionCard({ priority, category, title, detail, onBuild, setTab }) {
   return (
     <div style={{
       background: '#fff',
-      borderRadius: '0 8px 8px 0',
+      borderRadius: '0 4px 4px 0',
       padding: '12px 16px',
       marginBottom: 8,
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      boxShadow: '0 2px 2px rgba(0,0,0,.14), 0 3px 1px rgba(0,0,0,.12), 0 1px 5px rgba(0,0,0,.20)',
       display: 'flex', alignItems: 'flex-start', gap: 12,
-      border: `1px solid ${p.color}18`,
       borderLeft: `4px solid ${p.color}`,
     }}>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -180,20 +180,21 @@ function ActionCard({ priority, category, title, detail, onBuild, setTab }) {
             border: `1px solid ${p.color}30`, letterSpacing: '0.02em',
           }}>{p.label}</span>
           <span style={{
-            fontSize: 9, color: '#9CA3AF', fontWeight: 600,
-            background: '#F3F4F6', borderRadius: 3, padding: '1px 5px',
+            fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600,
+            background: 'var(--color-bg-section)', borderRadius: 3, padding: '1px 5px',
           }}>{ACTION_CATEGORY[category] || category}</span>
         </div>
-        <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: detail ? 3 : 0, lineHeight: 1.4 }}>{title}</div>
-        {detail && <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.5 }}>{detail}</div>}
+        <div style={{ fontSize: 14, fontWeight: 500, color: 'var(--color-text)', marginBottom: detail ? 3 : 0, lineHeight: 1.4, letterSpacing: '0.0125em' }}>{title}</div>
+        {detail && <div style={{ fontSize: 12, color: 'var(--color-text-secondary)', lineHeight: 1.5, letterSpacing: '0.01786em' }}>{detail}</div>}
       </div>
       {setTab && (
         <button onClick={() => setTab('build')} style={{
-          flexShrink: 0, background: '#F0F0EE', border: '1px solid #D4D4D4',
-          borderRadius: 6, padding: '5px 12px', fontSize: 10, fontWeight: 700,
-          color: '#0F172A', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'center',
+          flexShrink: 0, background: 'transparent', border: 'none',
+          borderRadius: 4, padding: '5px 8px', fontSize: 12, fontWeight: 500,
+          color: '#18181b', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'center',
+          letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif',
         }}>
-          Build →
+          BUILD
         </button>
       )}
     </div>
@@ -206,7 +207,7 @@ function PriorityBanner({ dot, label, count, color, bg, borderColor }) {
     <div style={{
       display: 'flex', alignItems: 'center', gap: 8,
       background: bg, border: `1px solid ${borderColor || color + '30'}`,
-      borderRadius: 8, padding: '8px 14px', marginBottom: 8, marginTop: 4,
+      borderRadius: 4, padding: '8px 14px', marginBottom: 8, marginTop: 4,
     }}>
       <span style={{ fontSize: 14 }}>{dot}</span>
       <span style={{ fontSize: 12, fontWeight: 800, color, letterSpacing: '-0.01em' }}>
@@ -219,20 +220,16 @@ function PriorityBanner({ dot, label, count, color, bg, borderColor }) {
   )
 }
 
-// ── Section title helper ──
+// ── MD2 Section title helper ──
 function SectionTitle({ children, sub }) {
   return (
     <div style={{ marginBottom: 12 }}>
-      <div style={{
-        width: 24, height: 3, background: '#0F172A',
-        borderRadius: 2, marginBottom: 6,
-      }}/>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
         <span style={{
-          fontSize: 13, fontWeight: 800, color: '#0F172A',
-          letterSpacing: '-0.02em',
+          fontSize: 14, fontWeight: 500, color: 'var(--color-text)',
+          letterSpacing: '0.0125em',
         }}>{children}</span>
-        {sub && <span style={{ fontSize: 10, fontWeight: 500, color: '#9CA3AF' }}>{sub}</span>}
+        {sub && <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--color-text-secondary)' }}>{sub}</span>}
       </div>
     </div>
   )
@@ -251,7 +248,7 @@ function ReportView({ data, visible=true, setTab }) {
   const avgEng = engNums.length ? (engNums.reduce((s,n)=>s+n,0)/engNums.length).toFixed(1) : '-'
   const totBN = srs.reduce((s,r)=>s+r.bottlenecks,0)
   const allMedia = rzones.flatMap(z=>z.media.map(m=>({...m,zoneName:zLabel(z)}))).sort((a,b)=>b.skipRate-a.skipRate)
-  const gradeOf = sr => sr>50?{g:'D',c:'#DC2626',bg:'#FEF2F2'}:sr>20?{g:'C',c:'#D97706',bg:'#FFFBEB'}:sr>10?{g:'B',c:'#2563EB',bg:'#EFF6FF'}:{g:'A',c:'#059669',bg:'#ECFDF5'}
+  const gradeOf = sr => sr>50?{g:'D',c:'var(--color-error)',bg:'var(--color-error-bg)'}:sr>20?{g:'C',c:'var(--color-warning)',bg:'var(--color-warning-bg)'}:sr>10?{g:'B',c:'var(--color-info)',bg:'var(--color-info-bg)'}:{g:'A',c:'var(--color-success)',bg:'var(--color-success-bg)'}
   const starsOf = eng => { if(eng===null) return '-'; const f=Math.round(eng); return '★'.repeat(f)+'☆'.repeat(Math.max(0,5-f)) }
 
   useEffect(()=>{
@@ -286,7 +283,7 @@ function ReportView({ data, visible=true, setTab }) {
         responsive:true, maintainAspectRatio:false,
         interaction:{ mode:'index', intersect:false },
         plugins:{
-          legend:{ display:true, position:'top', align:'end', labels:{ font:{size:11,weight:'500'}, color:'#6B7280', boxWidth:10, boxHeight:10, borderRadius:3, padding:16, usePointStyle:true } },
+          legend:{ display:true, position:'top', align:'end', labels:{ font:{size:11,weight:'500'}, color:'#71717a', boxWidth:10, boxHeight:10, borderRadius:3, padding:16, usePointStyle:true } },
           tooltip:{
             backgroundColor:'rgba(15,25,20,0.85)', titleFont:{size:11,weight:'600'}, bodyFont:{size:11},
             padding:10, cornerRadius:8, boxPadding:4,
@@ -298,7 +295,7 @@ function ReportView({ data, visible=true, setTab }) {
             beginAtZero:true, position:'left',
             grid:{ color:'rgba(0,0,0,0.04)', drawBorder:false },
             border:{ display:false },
-            ticks:{ color:'#9CA3AF', font:{size:10}, maxTicksLimit:5 },
+            ticks:{ color:'#a1a1aa', font:{size:10}, maxTicksLimit:5 },
           },
           y1:{
             beginAtZero:true, max:100, position:'right',
@@ -352,37 +349,37 @@ function ReportView({ data, visible=true, setTab }) {
     {(_totalZones > 0 || srs.length > 0) && (
       <div style={{
         display: 'flex', alignItems: 'center', gap: 6,
-        background: '#F8FAFC', border: '1px solid #E2E8F0',
+        background: 'var(--color-bg-section)', border: '1px solid var(--color-border)',
         borderRadius: 8, padding: '8px 14px', marginBottom: 16,
         flexWrap: 'wrap',
       }}>
-        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
-          <strong style={{ color: '#0F172A', fontWeight: 700 }}>{_visitedZones}개 구역</strong> 방문
+        <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+          <strong style={{ color: 'var(--color-text)', fontWeight: 700 }}>{_visitedZones}개 구역</strong> 방문
         </span>
-        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
-        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
-          <strong style={{ color: '#0F172A', fontWeight: 700 }}>{totV}명</strong> 체험
+        <span style={{ color: 'var(--color-border)', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+          <strong style={{ color: 'var(--color-text)', fontWeight: 700 }}>{totV}명</strong> 체험
         </span>
-        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
-        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
-          <strong style={{ color: _urgentCount > 0 ? '#DC2626' : '#059669', fontWeight: 700 }}>
+        <span style={{ color: 'var(--color-border)', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-secondary)', fontWeight: 500 }}>
+          <strong style={{ color: _urgentCount > 0 ? 'var(--color-error)' : 'var(--color-success)', fontWeight: 700 }}>
             {_urgentCount}건
           </strong> 개선 필요
         </span>
-        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
-        <span style={{ fontSize: 11, color: '#475569' }}>
-          평균 스킵율 <strong style={{ color: avgSR>30?'#DC2626':avgSR>10?'#D97706':'#059669', fontWeight:700 }}>{avgSR}%</strong>
+        <span style={{ color: 'var(--color-border)', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+          평균 스킵율 <strong style={{ color: avgSR>30?'var(--color-error)':avgSR>10?'var(--color-warning)':'var(--color-success)', fontWeight:700 }}>{avgSR}%</strong>
         </span>
         {avgEng !== '-' && <>
-          <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
-          <span style={{ fontSize: 11, color: '#475569' }}>
-            몰입 강도 <strong style={{ color: '#7C3AED', fontWeight: 700 }}>★{avgEng}</strong>
+          <span style={{ color: 'var(--color-border)', fontSize: 11 }}>·</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+            몰입 강도 <strong style={{ color: 'var(--color-purple)', fontWeight: 700 }}>★{avgEng}</strong>
           </span>
         </>}
         {totBN > 0 && <>
-          <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
-          <span style={{ fontSize: 11, color: '#475569' }}>
-            병목 <strong style={{ color: '#DC2626', fontWeight: 700 }}>{totBN}건</strong>
+          <span style={{ color: 'var(--color-border)', fontSize: 11 }}>·</span>
+          <span style={{ fontSize: 11, color: 'var(--color-text-secondary)' }}>
+            병목 <strong style={{ color: 'var(--color-error)', fontWeight: 700 }}>{totBN}건</strong>
           </span>
         </>}
       </div>
@@ -475,19 +472,19 @@ function ReportView({ data, visible=true, setTab }) {
 
         return (<>
           {urgentCount>0&&(
-            <PriorityBanner dot="🔴" label="긴급" count={urgentCount} color="#DC2626" bg="#FEF2F2" borderColor="#FECACA"/>
+            <PriorityBanner dot="🔴" label="긴급" count={urgentCount} color="#ef4444" bg="#fef2f2" borderColor="#fecaca"/>
           )}
           {actions.filter(a=>a.priority==='urgent').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={setTab}/>
           ))}
           {recCount>0&&(
-            <PriorityBanner dot="🟡" label="권장" count={recCount} color="#D97706" bg="#FFFBEB" borderColor="#FDE68A"/>
+            <PriorityBanner dot="🟡" label="권장" count={recCount} color="#d97706" bg="#fffbeb" borderColor="#fed7aa"/>
           )}
           {actions.filter(a=>a.priority==='recommend').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={setTab}/>
           ))}
           {maintainCount>0&&(
-            <PriorityBanner dot="🟢" label="유지" count={maintainCount} color="#059669" bg="#ECFDF5" borderColor="#A7F3D0"/>
+            <PriorityBanner dot="🟢" label="유지" count={maintainCount} color="#16a34a" bg="#f0fdf4" borderColor="#86efac"/>
           )}
           {actions.filter(a=>a.priority==='maintain').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={null}/>
@@ -510,46 +507,46 @@ function ReportView({ data, visible=true, setTab }) {
       const hasEng = totEnt > 0 || data?.engRate != null
       return (
         <div className="rpt-kpi-row" style={{ marginBottom: 8 }}>
-          <div className="rpt-kpi" style={{ borderTop: '3px solid #0F172A', minHeight: 88 }}>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #18181b', minHeight: 88 }}>
             <span className="rpt-kpi-l">도달률</span>
             <span className={`rpt-kpi-v${hasFlow&&flowEffNum>=70?' ok':hasFlow&&flowEffNum<40?' warn':''}`}
               style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
               {hasFlow?flowEffNum:'-'}<small style={{ fontSize: 13 }}>{hasFlow?'%':''}</small>
             </span>
-            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{visitedZones}/{totalZones} 구역 방문</span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{visitedZones}/{totalZones} 구역 방문</span>
           </div>
-          <div className="rpt-kpi" style={{ borderTop: '3px solid #6366f1', minHeight: 88 }}>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #3b82f6', minHeight: 88 }}>
             <span className="rpt-kpi-l">체험 전환율</span>
             <span className={`rpt-kpi-v${hasEng&&engRateNum>=60?' ok':hasEng&&engRateNum<30?' warn':''}`}
               style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
               {hasEng?engRateNum:'-'}<small style={{ fontSize: 13 }}>{hasEng?'%':''}</small>
             </span>
-            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{totEnged}/{totEnt} 체험</span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{totEnged}/{totEnt} 체험</span>
           </div>
-          <div className="rpt-kpi" style={{ borderTop: '3px solid #F59E0B', minHeight: 88 }}>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid var(--color-warning)', minHeight: 88 }}>
             <span className="rpt-kpi-l">평균 체류시간</span>
             <span className="rpt-kpi-v" style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
               {avgDw>0?avgDw:'-'}<small style={{ fontSize: 13 }}>{avgDw>0?'초':''}</small>
             </span>
-            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>슬롯 평균</span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>슬롯 평균</span>
           </div>
-          <div className="rpt-kpi" style={{ borderTop: `3px solid ${avgWait>20?'#DC2626':avgWait>10?'#D97706':'#E4E6EA'}`, minHeight: 88 }}>
+          <div className="rpt-kpi" style={{ borderTop: `3px solid ${avgWait>20?'var(--color-error)':avgWait>10?'var(--color-warning)':'var(--color-border)'}`, minHeight: 88 }}>
             <span className="rpt-kpi-l">평균 혼잡도</span>
             <span className={`rpt-kpi-v${avgWait>20?' warn':''}`} style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
               {avgWait}<small style={{ fontSize: 13 }}>초</small>
             </span>
-            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{totV}명 입장</span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: 'var(--color-text-muted)' }}>{totV}명 입장</span>
           </div>
         </div>
       )
     })()}
 
     {/* 보조 지표 row */}
-    <div style={{display:'flex',gap:20,marginBottom:20,padding:'8px 12px',background:'#F8FAFC',borderRadius:8,flexWrap:'wrap',border:'1px solid #E2E8F0'}}>
-      <span style={{fontSize:11,color:'#64748B'}}>평균 스킵율 <strong style={{color:avgSR>30?'#DC2626':avgSR>10?'#D97706':'#059669',fontWeight:700}}>{avgSR}%</strong></span>
-      <span style={{fontSize:11,color:'#64748B'}}>평균 몰입 강도 <strong style={{color:'#7C3AED',fontWeight:700}}>{avgEng!=='-'?`★${avgEng}`:'-'}</strong></span>
-      <span style={{fontSize:11,color:'#64748B'}}>병목 발생 <strong style={{color:totBN>0?'#DC2626':'#6B7280',fontWeight:700}}>{totBN}건</strong></span>
-      <span style={{fontSize:11,color:'#64748B'}}>총 입장객 <strong style={{color:'#111827',fontWeight:700}}>{totV}명</strong></span>
+    <div style={{display:'flex',gap:20,marginBottom:20,padding:'8px 12px',background:'var(--color-bg-section)',borderRadius:4,flexWrap:'wrap'}}>
+      <span style={{fontSize:12,color:'var(--color-text-secondary)'}}>평균 스킵율 <strong style={{color:avgSR>30?'var(--color-error)':avgSR>10?'var(--color-warning)':'var(--color-success)',fontWeight:500}}>{avgSR}%</strong></span>
+      <span style={{fontSize:12,color:'var(--color-text-secondary)'}}>평균 몰입 강도 <strong style={{color:'var(--color-purple)',fontWeight:500}}>{avgEng!=='-'?`★${avgEng}`:'-'}</strong></span>
+      <span style={{fontSize:12,color:'var(--color-text-secondary)'}}>병목 발생 <strong style={{color:totBN>0?'var(--color-error)':'var(--color-text-muted)',fontWeight:500}}>{totBN}건</strong></span>
+      <span style={{fontSize:12,color:'var(--color-text-secondary)'}}>총 입장객 <strong style={{color:'var(--color-text)',fontWeight:500}}>{totV}명</strong></span>
     </div>
 
     {/* ── ③ 구역별 분석 차트 ── */}
@@ -573,16 +570,14 @@ function ReportView({ data, visible=true, setTab }) {
                   <td style={{fontWeight:500}}>{r.label}</td>
                   <td>{r.visitors}명</td>
                   <td>
-                    <div style={{display:'flex',alignItems:'center',gap:5}}>
-                      <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:40}}>
-                        <div style={{height:'100%',width:`${Math.min(100,r.skipRate)}%`,background:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',borderRadius:2}}/>
-                      </div>
-                      <span style={{color:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
+                    <div className="prog-wrap">
+                      <div className="prog-bar"><div className={`prog-fill ${r.skipRate>30?'error':r.skipRate>10?'warn':'success'}`} style={{width:`${Math.min(100,r.skipRate)}%`}}/></div>
+                      <span style={{color:r.skipRate>30?'var(--color-error)':r.skipRate>10?'var(--color-warning)':'var(--color-success)',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
                     </div>
                   </td>
                   <td>{r.avgDwell}초</td>
-                  <td style={{color:'#7C3AED'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
-                  <td style={{color:r.bottlenecks>0?'#DC2626':'#9CA3AF'}}>{r.bottlenecks}건</td>
+                  <td style={{color:'var(--color-purple)'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
+                  <td style={{color:r.bottlenecks>0?'var(--color-error)':'var(--color-text-muted)'}}>{r.bottlenecks}건</td>
                 </tr>
               ))}
             </tbody>
@@ -599,9 +594,9 @@ function ReportView({ data, visible=true, setTab }) {
           {[...rzones].sort((a,b)=>(b.entries||0)-(a.entries||0)).map(z=>{
             const convRate = z.convRate??0
             const avgWait = z.avgWait??0
-            const convGrade = convRate>60?{g:'A',c:'#059669',bg:'#ECFDF5'}:convRate>30?{g:'B',c:'#2563EB',bg:'#EFF6FF'}:convRate>0?{g:'C',c:'#D97706',bg:'#FFFBEB'}:{g:'-',c:'#888',bg:'#f5f5f5'}
-            const waitColor = avgWait>20?'#DC2626':avgWait>10?'#D97706':'#059669'
-            const skipColor = z.skipRate>50?'#DC2626':z.skipRate>20?'#D97706':'#059669'
+            const convGrade = convRate>60?{g:'A',c:'var(--color-success)',bg:'var(--color-success-bg)'}:convRate>30?{g:'B',c:'var(--color-info)',bg:'var(--color-info-bg)'}:convRate>0?{g:'C',c:'var(--color-warning)',bg:'var(--color-warning-bg)'}:{g:'-',c:'var(--color-text-muted)',bg:'var(--color-bg-section)'}
+            const waitColor = avgWait>20?'var(--color-error)':avgWait>10?'var(--color-warning)':'var(--color-success)'
+            const skipColor = z.skipRate>50?'var(--color-error)':z.skipRate>20?'var(--color-warning)':'var(--color-success)'
             return (
               <div key={z.id} style={{
                 background: '#fff', border: '1px solid #E4E6EA',
@@ -611,7 +606,7 @@ function ReportView({ data, visible=true, setTab }) {
               }}>
                 {/* Zone name + grade */}
                 <div style={{ minWidth: 0, flex: '0 0 120px' }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#111827', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{zLabel(z)}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#09090b', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{zLabel(z)}</div>
                   <span style={{
                     display: 'inline-block', padding: '2px 8px', borderRadius: 4,
                     fontSize: 11, fontWeight: 700, background: convGrade.bg, color: convGrade.c,
@@ -620,48 +615,39 @@ function ReportView({ data, visible=true, setTab }) {
 
                 {/* Conversion bar */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 4 }}>체험 전환율</div>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 4 }}>체험 전환율</div>
                   {z.entries>0 ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ flex: 1, height: 6, background: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
-                        <div style={{
-                          height: '100%', width: `${Math.min(100, convRate)}%`,
-                          background: convGrade.c, borderRadius: 3,
-                        }}/>
-                      </div>
+                    <div className="prog-wrap">
+                      <div className="prog-bar" style={{height:6}}><div className="prog-fill" style={{width:`${Math.min(100,convRate)}%`,background:convGrade.c}}/></div>
                       <span style={{ fontSize: 11, fontWeight: 700, color: convGrade.c, minWidth: 32, textAlign: 'right' }}>{convRate}%</span>
                     </div>
-                  ) : <span style={{ fontSize: 10, color: '#CBD5E1' }}>데이터 없음</span>}
+                  ) : <span style={{ fontSize: 10, color: 'var(--color-border)' }}>데이터 없음</span>}
                 </div>
 
                 {/* Wait time pill */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 52 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>대기</div>
-                  <span style={{
-                    display: 'inline-block', padding: '2px 8px', borderRadius: 12,
-                    fontSize: 11, fontWeight: 700, color: waitColor,
-                    background: `${waitColor}15`, border: `1px solid ${waitColor}30`,
-                  }}>{z.entries>0 ? avgWait+'초' : '-'}</span>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>대기</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: waitColor }}>{z.entries>0 ? avgWait+'초' : '-'}</span>
                 </div>
 
                 {/* Skip rate */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>스킵</div>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>스킵</div>
                   <span style={{ fontSize: 11, fontWeight: 700, color: skipColor }}>{z.skipRate}%</span>
                 </div>
 
                 {/* Engagement */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 56 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>몰입 강도</div>
-                  <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 600 }}>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>몰입 강도</div>
+                  <span style={{ fontSize: 11, color: 'var(--color-purple)', fontWeight: 600 }}>
                     {z.engIdx!==null ? starsOf(z.engIdx)+` (${z.engIdx})` : '-'}
                   </span>
                 </div>
 
                 {/* Entries */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 40 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>진입</div>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>{z.entries??'-'}명</span>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>진입</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-text)' }}>{z.entries??'-'}명</span>
                 </div>
               </div>
             )
@@ -688,43 +674,41 @@ function ReportView({ data, visible=true, setTab }) {
                 <div style={{ flex: '0 0 130px', minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
                     <span style={{ width: 10, height: 10, borderRadius: 3, background: m.bg||'#eee', border: `1.5px solid ${m.color||'#ccc'}`, flexShrink: 0 }}/>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.name}</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#09090b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.name}</span>
                   </div>
-                  <span style={{ fontSize: 10, color: '#9CA3AF', paddingLeft: 15 }}>{m.zoneName}</span>
+                  <span style={{ fontSize: 10, color: 'var(--color-text-muted)', paddingLeft: 15 }}>{m.zoneName}</span>
                 </div>
 
                 {/* Skip bar */}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>스킵율</div>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>스킵율</div>
                   {m.exposure>0 ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ flex: 1, height: 5, background: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
-                        <div style={{ height: '100%', width: `${Math.min(100,m.skipRate)}%`, background: m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669', borderRadius: 3 }}/>
-                      </div>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669', minWidth: 32, textAlign: 'right' }}>{m.skipRate}%</span>
+                    <div className="prog-wrap">
+                      <div className="prog-bar" style={{height:5}}><div className={`prog-fill ${m.skipRate>50?'error':m.skipRate>20?'warn':'success'}`} style={{width:`${Math.min(100,m.skipRate)}%`}}/></div>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: m.skipRate>50?'var(--color-error)':m.skipRate>20?'var(--color-warning)':'var(--color-success)', minWidth: 32, textAlign: 'right' }}>{m.skipRate}%</span>
                     </div>
-                  ) : <span style={{ fontSize: 10, color: '#CBD5E1' }}>-</span>}
+                  ) : <span style={{ fontSize: 10, color: 'var(--color-border)' }}>-</span>}
                 </div>
 
                 {/* Exposure */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>노출</div>
-                  <span style={{ fontSize: 11, color: '#374151' }}>{m.exposure>0?`${m.exposure}회`:'-'}</span>
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>노출</div>
+                  <span style={{ fontSize: 11, color: 'var(--color-text)' }}>{m.exposure>0?`${m.exposure}회`:'-'}</span>
                 </div>
 
                 {/* Engagement */}
                 <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
-                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>몰입</div>
-                  <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 600 }}>
-                    {m.engIdx!=null?`★${m.engIdx}`:<span style={{color:'#CBD5E1'}}>-</span>}
+                  <div style={{ fontSize: 9, color: 'var(--color-text-muted)', fontWeight: 600, marginBottom: 3 }}>몰입</div>
+                  <span style={{ fontSize: 11, color: 'var(--color-purple)', fontWeight: 600 }}>
+                    {m.engIdx!=null?`★${m.engIdx}`:<span style={{color:'var(--color-border)'}}>-</span>}
                   </span>
                 </div>
 
                 {/* Grade badge */}
                 <div style={{ flexShrink: 0 }}>
                   {m.exposure>0
-                    ? <span style={{ display:'inline-block', padding:'2px 8px', borderRadius:4, fontSize:11, fontWeight:700, background:g.bg, color:g.c }}>{g.g}</span>
-                    : <span style={{ fontSize:11, color:'#CBD5E1' }}>-</span>
+                    ? <span className={`badge ${g.g==='A'?'grade-a':g.g==='B'?'grade-b':g.g==='C'?'grade-c':'grade-d'}`}>{g.g}</span>
+                    : <span style={{ fontSize:11, color:'var(--color-border)' }}>-</span>
                   }
                 </div>
               </div>
@@ -751,44 +735,44 @@ function SimLogCard({ log, onDelete }) {
   })()
   const zones = log.zones||[]
   const worstMedia = zones.flatMap(z=>z.media.map(m=>({...m,zoneName:z.name}))).filter(m=>m.exposure>0).sort((a,b)=>b.skipRate-a.skipRate).slice(0,3)
-  const gradeC = sr=>sr>50?'#DC2626':sr>20?'#D97706':'#059669'
+  const gradeC = sr=>sr>50?'var(--color-error)':sr>20?'var(--color-warning)':'var(--color-success)'
   return (<>
-    <div style={{background:'#fff',border:'1px solid #e8ede8',borderRadius:10,marginBottom:8,overflow:'hidden'}}>
+    <div style={{background:'var(--color-surface)',border:'1px solid var(--color-border)',borderRadius:10,marginBottom:8,overflow:'hidden'}}>
       <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 12px',cursor:'pointer',userSelect:'none'}}
         onClick={()=>setOpen(o=>!o)}>
-        <span style={{fontSize:10,color:'#9CA3AF',flexShrink:0}}>{log.ts}</span>
-        <span style={{fontSize:11,fontWeight:600,color:'#111',flex:1}}>{log.project}</span>
-        <span style={{fontSize:10,color:'#6B7280',background:'#E6F7F1',borderRadius:5,padding:'2px 6px',flexShrink:0}}>{log.rangeLabel}</span>
-        <span style={{fontSize:10,color:'#6B7280',flexShrink:0}}>입장 {totV}명</span>
-        <span style={{fontSize:10,color:avgSR>30?'#DC2626':'#059669',fontWeight:600,flexShrink:0}}>스킵 {avgSR}%</span>
-        {avgEng!=='-'&&<span style={{fontSize:10,color:'#7C3AED',fontWeight:600,flexShrink:0}}>★{avgEng}</span>}
-        <span style={{fontSize:10,color:'#9CA3AF',flexShrink:0}}>{open?'▲':'▼'}</span>
+        <span style={{fontSize:10,color:'var(--color-text-muted)',flexShrink:0}}>{log.ts}</span>
+        <span style={{fontSize:11,fontWeight:600,color:'var(--color-text)',flex:1}}>{log.project}</span>
+        <span className="badge badge-info" style={{flexShrink:0}}>{log.rangeLabel}</span>
+        <span style={{fontSize:10,color:'var(--color-text-secondary)',flexShrink:0}}>입장 {totV}명</span>
+        <span style={{fontSize:10,color:avgSR>30?'var(--color-error)':'var(--color-success)',fontWeight:600,flexShrink:0}}>스킵 {avgSR}%</span>
+        {avgEng!=='-'&&<span style={{fontSize:10,color:'var(--color-purple)',fontWeight:600,flexShrink:0}}>★{avgEng}</span>}
+        <span style={{fontSize:10,color:'var(--color-text-muted)',flexShrink:0}}>{open?'▲':'▼'}</span>
         <button style={{background:'#F0F0EE',border:'1px solid #D4D4D4',borderRadius:5,cursor:'pointer',fontSize:10,color:'#0F172A',padding:'2px 7px',flexShrink:0,fontWeight:600}}
           onClick={e=>{e.stopPropagation(); setDetailOpen(true)}} title="상세 보기">상세 보기</button>
         <button style={{background:'none',border:'none',cursor:'pointer',fontSize:12,color:'#ccc',padding:'0 2px',flexShrink:0}}
           onClick={e=>{e.stopPropagation(); onDelete(log.id)}} title="삭제">✕</button>
       </div>
       {open&&(
-        <div style={{borderTop:'1px solid #f0f0f0'}}>
+        <div style={{borderTop:'1px solid var(--color-border-light)'}}>
           <div style={{padding:'8px 12px 4px'}}>
-            <div style={{fontSize:11,fontWeight:600,color:'#9CA3AF',marginBottom:5}}>시간대별 요약</div>
-            <table style={{width:'100%',borderCollapse:'collapse',fontSize:11}}>
+            <div style={{fontSize:11,fontWeight:600,color:'var(--color-text-muted)',marginBottom:5}}>시간대별 요약</div>
+            <table className="data-table">
               <thead>
-                <tr style={{background:'#f8faf8'}}>
+                <tr>
                   {['시간대','입장객','스킵율','체류','몰입 강도','병목'].map(h=>(
-                    <th key={h} style={{padding:'3px 6px',fontWeight:600,color:'#9CA3AF',textAlign:'center',borderBottom:'1px solid #eee',fontSize:11}}>{h}</th>
+                    <th key={h} style={{textAlign:'center'}}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {log.results.map(r=>(
-                  <tr key={r.slot} style={{borderBottom:'0.5px solid rgba(0,0,0,0.05)'}}>
-                    <td style={{padding:'4px 6px',fontWeight:500,textAlign:'center'}}>{r.label}</td>
-                    <td style={{padding:'4px 6px',textAlign:'center'}}>{r.visitors}명</td>
-                    <td style={{padding:'4px 6px',textAlign:'center',color:gradeC(r.skipRate),fontWeight:600}}>{r.skipRate}%</td>
-                    <td style={{padding:'4px 6px',textAlign:'center'}}>{r.avgDwell}초</td>
-                    <td style={{padding:'4px 6px',textAlign:'center',color:'#7C3AED'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
-                    <td style={{padding:'4px 6px',textAlign:'center',color:r.bottlenecks>0?'#e88':'#ccc'}}>{r.bottlenecks}건</td>
+                  <tr key={r.slot}>
+                    <td className="td-center" style={{fontWeight:500}}>{r.label}</td>
+                    <td className="td-center">{r.visitors}명</td>
+                    <td className="td-center" style={{color:gradeC(r.skipRate),fontWeight:600}}>{r.skipRate}%</td>
+                    <td className="td-center">{r.avgDwell}초</td>
+                    <td className="td-center" style={{color:'var(--color-purple)'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
+                    <td className="td-center" style={{color:r.bottlenecks>0?'var(--color-error)':'var(--color-text-muted)'}}>{r.bottlenecks}건</td>
                   </tr>
                 ))}
               </tbody>
@@ -796,43 +780,43 @@ function SimLogCard({ log, onDelete }) {
           </div>
 
           {zones.length>0&&(
-            <div style={{borderTop:'1px solid #f5f5f5'}}>
+            <div style={{borderTop:'1px solid var(--color-border-light)'}}>
               <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'6px 12px',cursor:'pointer'}}
                 onClick={()=>setZoneOpen(o=>!o)}>
-                <span style={{fontSize:11,fontWeight:600,color:'#9CA3AF'}}>구역 · 미디어 분석</span>
-                <span style={{fontSize:10,color:'#bbb'}}>{zoneOpen?'▲':'▼'}</span>
+                <span style={{fontSize:11,fontWeight:600,color:'var(--color-text-muted)'}}>구역 · 미디어 분석</span>
+                <span style={{fontSize:10,color:'var(--color-text-muted)'}}>{zoneOpen?'▲':'▼'}</span>
               </div>
               {zoneOpen&&(
                 <div style={{padding:'0 12px 10px'}}>
                   {worstMedia.length>0&&(
                     <div style={{marginBottom:8}}>
-                      <div style={{fontSize:9,color:'#9CA3AF',fontWeight:600,marginBottom:4}}>스킵율 높은 미디어 TOP{worstMedia.length}</div>
+                      <div style={{fontSize:9,color:'var(--color-text-muted)',fontWeight:600,marginBottom:4}}>스킵율 높은 미디어 TOP{worstMedia.length}</div>
                       {worstMedia.map(m=>(
                         <div key={m.uid} style={{display:'flex',alignItems:'center',gap:6,marginBottom:4}}>
                           <span style={{width:7,height:7,borderRadius:2,background:m.bg||'#eee',border:`1px solid ${m.color||'#ccc'}`,flexShrink:0}}/>
                           <span style={{fontSize:10,flex:1,fontWeight:500}}>{m.name}</span>
-                          <span style={{fontSize:9,color:'#9CA3AF'}}>{m.zoneName}</span>
+                          <span style={{fontSize:9,color:'var(--color-text-muted)'}}>{m.zoneName}</span>
                           <span style={{fontSize:10,fontWeight:700,color:gradeC(m.skipRate)}}>{m.skipRate}%</span>
-                          {m.engIdx!=null&&<span style={{fontSize:10,color:'#7C3AED'}}>★{m.engIdx}</span>}
+                          {m.engIdx!=null&&<span style={{fontSize:10,color:'var(--color-purple)'}}>★{m.engIdx}</span>}
                         </div>
                       ))}
                     </div>
                   )}
-                  <div style={{fontSize:9,color:'#9CA3AF',fontWeight:600,marginBottom:4}}>구역별 스킵율 · 몰입 강도</div>
+                  <div style={{fontSize:9,color:'var(--color-text-muted)',fontWeight:600,marginBottom:4}}>구역별 스킵율 · 몰입 강도</div>
                   {zones.map(z=>(
                     <div key={z.id} style={{marginBottom:6}}>
                       <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:3}}>
                         <span style={{fontSize:10,fontWeight:600,flex:1}}>{z.name}{z.floor>0?` (Area ${z.floor+1})`:''}</span>
                         <span style={{fontSize:10,fontWeight:700,color:gradeC(z.skipRate)}}>스킵 {z.skipRate}%</span>
-                        {z.engIdx!=null&&<span style={{fontSize:10,color:'#7C3AED'}}>★{z.engIdx}</span>}
+                        {z.engIdx!=null&&<span style={{fontSize:10,color:'var(--color-purple)'}}>★{z.engIdx}</span>}
                       </div>
                       {z.media.filter(m=>m.exposure>0).map(m=>(
                         <div key={m.uid} style={{display:'flex',alignItems:'center',gap:5,paddingLeft:10,marginBottom:2}}>
                           <span style={{width:6,height:6,borderRadius:2,background:m.bg||'#eee',border:`1px solid ${m.color||'#ccc'}`,flexShrink:0}}/>
-                          <span style={{fontSize:10,flex:1,color:'#6B7280'}}>{m.name}</span>
-                          <span style={{fontSize:9,color:'#9CA3AF'}}>{m.exposure}회</span>
+                          <span style={{fontSize:10,flex:1,color:'var(--color-text-secondary)'}}>{m.name}</span>
+                          <span style={{fontSize:9,color:'var(--color-text-muted)'}}>{m.exposure}회</span>
                           <span style={{fontSize:10,color:gradeC(m.skipRate)}}>{m.skipRate}%</span>
-                          {m.engIdx!=null&&<span style={{fontSize:10,color:'#7C3AED'}}>★{m.engIdx}</span>}
+                          {m.engIdx!=null&&<span style={{fontSize:10,color:'var(--color-purple)'}}>★{m.engIdx}</span>}
                         </div>
                       ))}
                     </div>
@@ -849,8 +833,8 @@ function SimLogCard({ log, onDelete }) {
         <div className="log-modal-box" onClick={e=>e.stopPropagation()}>
           <div className="log-modal-header">
             <div style={{display:'flex',flexDirection:'column',gap:2}}>
-              <span style={{fontSize:13,fontWeight:700,color:'#111'}}>{log.project}</span>
-              <span style={{fontSize:11,color:'#9CA3AF'}}>{log.ts} · {log.rangeLabel}</span>
+              <span style={{fontSize:13,fontWeight:700,color:'var(--color-text)'}}>{log.project}</span>
+              <span style={{fontSize:11,color:'var(--color-text-muted)'}}>{log.ts} · {log.rangeLabel}</span>
             </div>
             <button className="log-modal-close" onClick={()=>setDetailOpen(false)}>✕</button>
           </div>
@@ -887,8 +871,8 @@ function EmptyState({ setTab }) {
       ),
       title: '개선 액션 플랜',
       desc: '긴급·권장·유지 3단계로 정렬된 구체적 개선 과제 자동 생성',
-      color: '#DC2626',
-      bg: '#FEF2F2',
+      color: '#ef4444',
+      bg: '#fef2f2',
     },
     {
       icon: (
@@ -901,8 +885,8 @@ function EmptyState({ setTab }) {
       ),
       title: '구역 성과 분석',
       desc: '구역별 전환율 바, 대기 시간, 스킵율, 몰입 강도 시각화',
-      color: '#2563EB',
-      bg: '#EFF6FF',
+      color: '#18181b',
+      bg: '#eff6ff',
     },
     {
       icon: (
@@ -913,8 +897,8 @@ function EmptyState({ setTab }) {
       ),
       title: '미디어 효과 분석',
       desc: '미디어별 스킵율, 노출 횟수, 몰입 강도를 등급과 함께 비교',
-      color: '#7C3AED',
-      bg: '#F5F3FF',
+      color: '#7c3aed',
+      bg: '#F3E5F5',
     },
   ]
 
@@ -926,21 +910,21 @@ function EmptyState({ setTab }) {
       {/* Icon graphic */}
       <div style={{
         width: 72, height: 72, borderRadius: '50%',
-        background: 'linear-gradient(135deg, #F0F0EE 0%, #E8E8E6 100%)',
-        border: '2px solid rgba(15,23,42,0.10)',
+        background: '#eff6ff',
+        border: 'none',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         marginBottom: 20,
-        boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+        boxShadow: '0 2px 2px rgba(0,0,0,.14), 0 3px 1px rgba(0,0,0,.12), 0 1px 5px rgba(0,0,0,.20)',
       }}>
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#18181b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4l-5 5-4-4-3 3"/>
         </svg>
       </div>
 
-      <div style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', marginBottom: 8, letterSpacing: '-0.03em' }}>
+      <div style={{ fontSize: 20, fontWeight: 400, color: 'var(--color-text)', marginBottom: 8, letterSpacing: '0.0125em' }}>
         Insights will appear here
       </div>
-      <div style={{ fontSize: 13, color: '#64748B', marginBottom: 32, maxWidth: 340, lineHeight: 1.6 }}>
+      <div style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 32, maxWidth: 340, lineHeight: 1.5, letterSpacing: '0.01786em' }}>
         시뮬레이션을 실행하면 전시관 운영 데이터를 분석해<br/>아래 4가지 인사이트를 자동으로 생성합니다.
       </div>
 
@@ -951,18 +935,19 @@ function EmptyState({ setTab }) {
       }}>
         {tiles.map(t => (
           <div key={t.title} style={{
-            background: '#fff', border: '1px solid #E2E8F0',
-            borderRadius: 12, padding: '16px',
-            textAlign: 'left', boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+            background: '#fff', border: 'none',
+            borderRadius: 4, padding: '16px',
+            textAlign: 'left',
+            boxShadow: '0 2px 2px rgba(0,0,0,.14), 0 3px 1px rgba(0,0,0,.12), 0 1px 5px rgba(0,0,0,.20)',
           }}>
             <div style={{
-              width: 40, height: 40, borderRadius: 10,
+              width: 40, height: 40, borderRadius: 4,
               background: t.bg, color: t.color,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               marginBottom: 10,
             }}>{t.icon}</div>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#0F172A', marginBottom: 4 }}>{t.title}</div>
-            <div style={{ fontSize: 10, color: '#64748B', lineHeight: 1.5 }}>{t.desc}</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--color-text)', marginBottom: 4, letterSpacing: '0.0125em' }}>{t.title}</div>
+            <div style={{ fontSize: 11, color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>{t.desc}</div>
           </div>
         ))}
       </div>
@@ -970,13 +955,13 @@ function EmptyState({ setTab }) {
       {/* CTA */}
       {setTab && (
         <button onClick={() => setTab('simulate')} style={{
-          background: '#0F172A', color: '#fff',
-          border: 'none', borderRadius: 10, padding: '12px 28px',
-          fontSize: 13, fontWeight: 700, cursor: 'pointer',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
-          letterSpacing: '-0.01em',
+          background: '#18181b', color: '#fff',
+          border: 'none', borderRadius: 4, padding: '0 24px', height: 42,
+          fontSize: 14, fontWeight: 500, cursor: 'pointer',
+          boxShadow: '0 2px 2px rgba(0,0,0,.14), 0 3px 1px rgba(0,0,0,.12), 0 1px 5px rgba(0,0,0,.20)',
+          letterSpacing: '0.0892em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif',
         }}>
-          시뮬레이션 실행하기 →
+          시뮬레이션 실행하기
         </button>
       )}
     </div>
@@ -987,12 +972,12 @@ export default function ResultPanel({ tab, saveReport }) {
   const { reportData, slotResults, simLogs, setSimLogs, setReportData, setTab } = useSimStore()
 
   return (
-    <div style={{display: tab==='report' ? 'block' : 'none', position:'absolute', inset:0, overflowY:'auto', background:'#F4F5F7'}}>
+    <div style={{display: tab==='report' ? 'block' : 'none', position:'absolute', inset:0, overflowY:'auto', background:'var(--color-bg)'}}>
       <div style={{maxWidth:900,margin:'0 auto',padding:'0 24px 40px'}}>
       {/* 헤더 */}
-      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,padding:'24px 0 16px',borderBottom:'1px solid #E4E6EA'}}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:20,padding:'24px 0 16px',borderBottom:'1px solid var(--color-border)'}}>
         <div style={{display:'flex',flexDirection:'column',gap:4}}>
-          <span style={{fontSize:18,fontWeight:800,color:'#111827',letterSpacing:'-0.02em'}}>Insights</span>
+          <span style={{fontSize:18,fontWeight:800,color:'var(--color-text)',letterSpacing:'-0.02em'}}>Insights</span>
           {reportData && (
             <div style={{display:'flex',alignItems:'center',gap:6}}>
               {reportData._logId && simLogs.length > 0 && (()=>{
@@ -1008,10 +993,10 @@ export default function ResultPanel({ tab, saveReport }) {
               {reportData._logId && simLogs.length > 0 && (()=>{
                 const log = simLogs.find(l=>l.id===reportData._logId)
                 return log?.scenario ? (
-                  <span style={{fontSize:10,color:'#9CA3AF'}}>{log.scenario} · {reportData.range?.label||''}</span>
+                  <span style={{fontSize:10,color:'#a1a1aa'}}>{log.scenario} · {reportData.range?.label||''}</span>
                 ) : null
               })()}
-              {!reportData._logId && <span style={{fontSize:11,color:'#9CA3AF'}}>{reportData.range?.label||''}</span>}
+              {!reportData._logId && <span style={{fontSize:11,color:'#a1a1aa'}}>{reportData.range?.label||''}</span>}
             </div>
           )}
         </div>
@@ -1032,8 +1017,8 @@ export default function ResultPanel({ tab, saveReport }) {
         <div style={{marginTop:20,background:'#fff',border:'1px solid #E4E6EA',borderRadius:14,padding:'16px',boxShadow:'0 1px 3px rgba(0,0,0,0.06)'}}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12}}>
             <div>
-              <span style={{fontSize:13,fontWeight:600,color:'#111827'}}>Run 비교</span>
-              <span style={{fontSize:11,color:'#9CA3AF',marginLeft:8}}>최신 {Math.min(simLogs.length,10)}개</span>
+              <span style={{fontSize:13,fontWeight:600,color:'#09090b'}}>Run 비교</span>
+              <span style={{fontSize:11,color:'#a1a1aa',marginLeft:8}}>최신 {Math.min(simLogs.length,10)}개</span>
             </div>
             <button className="btn-s" style={{fontSize:10,color:'#e55',borderColor:'#fcc'}}
               onClick={()=>{
@@ -1046,7 +1031,7 @@ export default function ResultPanel({ tab, saveReport }) {
               <thead>
                 <tr style={{background:'#F9FAFB',borderBottom:'2px solid #E4E6EA'}}>
                   {['Run','시나리오','범위','방문객','관람효율','체험전환율','평균혼잡도','스킵율',''].map(h=>(
-                    <th key={h} style={{padding:'8px 16px',fontWeight:600,color:'#9CA3AF',textAlign:h===''||h==='시나리오'||h==='범위'?'left':'center',fontSize:11,whiteSpace:'nowrap'}}>{h}</th>
+                    <th key={h} style={{padding:'8px 16px',fontWeight:600,color:'#a1a1aa',textAlign:h===''||h==='시나리오'||h==='범위'?'left':'center',fontSize:11,whiteSpace:'nowrap'}}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -1070,10 +1055,10 @@ export default function ResultPanel({ tab, saveReport }) {
                   const Delta = ({ cur, prev: pv, unit='%', higherBetter=true }) => {
                     if (cur==null||pv==null) return null
                     const d = cur - pv
-                    if (Math.abs(d) < 0.5) return <span style={{fontSize:9,color:'#9CA3AF',marginLeft:3}}>±0</span>
+                    if (Math.abs(d) < 0.5) return <span style={{fontSize:9,color:'#a1a1aa',marginLeft:3}}>±0</span>
                     const good = higherBetter ? d > 0 : d < 0
                     return (
-                      <span style={{fontSize:9,color:good?'#059669':'#DC2626',fontWeight:600,marginLeft:3}}>
+                      <span style={{fontSize:9,color:good?'#16a34a':'#ef4444',fontWeight:600,marginLeft:3}}>
                         {d>0?'+':''}{Math.round(d)}{unit}
                       </span>
                     )
@@ -1096,7 +1081,7 @@ export default function ResultPanel({ tab, saveReport }) {
                     <tr key={log.id}
                       onClick={()=>{ setReportData({zones:log.zones||[],range:log.range||{label:log.rangeLabel},slotResults:log.results||[],flowEff:log.flowEff,engRate:log.engRate,avgWait:log.avgWait,_logId:log.id}) }}
                       style={{
-                        background: isActive ? '#E6F7F1' : i%2===0?'#fff':'#fafafa',
+                        background: isActive ? '#eff6ff' : i%2===0?'#fff':'#fafafa',
                         borderBottom:'1px solid #f0f0f0',
                         cursor:'pointer',
                         transition:'background 0.15s',
@@ -1111,7 +1096,7 @@ export default function ResultPanel({ tab, saveReport }) {
                       <td style={{padding:'8px 10px',maxWidth:140,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontWeight:500}}>
                         {log.scenario||log.project}
                       </td>
-                      <td style={{padding:'8px 10px',color:'#9CA3AF',whiteSpace:'nowrap'}}>{log.rangeLabel}</td>
+                      <td style={{padding:'8px 10px',color:'#a1a1aa',whiteSpace:'nowrap'}}>{log.rangeLabel}</td>
                       <td style={{padding:'8px 10px',textAlign:'center'}}>
                         {totV}명<Delta cur={totV} prev={prevTotV} unit='명' higherBetter={true}/>
                       </td>
@@ -1155,7 +1140,7 @@ export default function ResultPanel({ tab, saveReport }) {
               </tbody>
             </table>
           </div>
-          <div style={{fontSize:10,color:'#9CA3AF',marginTop:6,textAlign:'right'}}>
+          <div style={{fontSize:10,color:'#a1a1aa',marginTop:6,textAlign:'right'}}>
             행 클릭 시 해당 Run의 Insights를 불러옵니다 · 🏆 = 항목별 최고값
           </div>
         </div>

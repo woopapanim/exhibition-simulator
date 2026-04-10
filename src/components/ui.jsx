@@ -28,8 +28,8 @@ export function PortalTip({ label, children }) {
         onMouseEnter={show}
         onMouseLeave={hide}
         style={{display:'inline-flex',alignItems:'center',justifyContent:'center',
-          width:13,height:13,borderRadius:'50%',background:'rgba(0,0,0,0.08)',
-          fontSize:9,fontWeight:700,color:'#6b7b74',cursor:'default',flexShrink:0}}
+          width:16,height:16,borderRadius:'50%',background:'rgba(0,0,0,0.08)',
+          fontSize:9,fontWeight:700,color:'#71717a',cursor:'default',flexShrink:0}}
       >i</span>
       {visible && rect && createPortal(
         <div style={{
@@ -37,12 +37,13 @@ export function PortalTip({ label, children }) {
           left: clampedLeft,
           top: Math.round(rect.top - 8),
           transform:'translate(-50%,-100%)',
-          background:'#1a2a24', color:'#e8f0ec',
-          fontSize:'10.5px', fontWeight:400, lineHeight:1.55,
-          padding:'8px 11px', borderRadius:'7px',
+          background:'rgba(97,97,97,0.92)', color:'#fff',
+          fontSize:'12px', fontWeight:400, lineHeight:1.5,
+          padding:'8px 12px', borderRadius:'4px',
           whiteSpace:'normal', width: TW + 'px',
           pointerEvents:'none', zIndex:99999,
-          boxShadow:'0 3px 14px rgba(0,0,0,0.22)',
+          boxShadow:'0 8px 10px rgba(0,0,0,.14), 0 3px 14px rgba(0,0,0,.12), 0 5px 5px rgba(0,0,0,.20)',
+          letterSpacing:'0.01786em',
         }}>{children}</div>,
         document.body
       )}
@@ -53,7 +54,7 @@ export function PortalTip({ label, children }) {
 /** 채움 그라디언트 슬라이더 */
 export function SliderInput({ min=0, max=100, step=1, value, onChange, style={}, ...props }) {
   const pct = Math.round(((+value - +min) / (+max - +min)) * 100)
-  const bg = `linear-gradient(to right, #00c896 0%, #00c896 ${pct}%, #dde8e3 ${pct}%, #dde8e3 100%)`
+  const bg = `linear-gradient(to right, #18181b 0%, #18181b ${pct}%, #d4d4d8 ${pct}%, #d4d4d8 100%)`
   return (
     <input type="range" min={min} max={max} step={step} value={value}
       onChange={onChange}
@@ -95,11 +96,11 @@ export function Sbc({ label, value, cls='', tooltip=null }) {
             <button
               onMouseDown={e => e.stopPropagation()}
               onClick={()=>setOpen(o=>!o)}
-              style={{background:'none',border:'none',cursor:'pointer',padding:0,lineHeight:1,color:'#888',fontSize:11,fontWeight:700}}>
+              style={{background:'none',border:'none',cursor:'pointer',padding:0,lineHeight:1,color:'#a1a1aa',fontSize:11,fontWeight:700}}>
               ⓘ
             </button>
             {open && (
-              <div style={{position:'absolute',top:'100%',left:0,zIndex:200,background:'#111',color:'#fff',borderRadius:8,padding:'10px 12px',fontSize:11,lineHeight:1.6,width:220,boxShadow:'0 4px 16px rgba(0,0,0,0.2)',marginTop:4}}>
+              <div style={{position:'absolute',top:'100%',left:0,zIndex:200,background:'rgba(97,97,97,0.92)',color:'#fff',borderRadius:4,padding:'8px 12px',fontSize:12,lineHeight:1.5,width:220,boxShadow:'0 8px 10px rgba(0,0,0,.14),0 3px 14px rgba(0,0,0,.12)',marginTop:4}}>
                 {tooltip}
               </div>
             )}

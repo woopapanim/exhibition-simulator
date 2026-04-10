@@ -119,7 +119,7 @@ export default function SetupPanel({
             <div className="bs-stat">
               <PortalTip label="면적 수용">
                 전체 존 면적 기준 최대 수용 인원입니다.<br/>
-                국제 전시 밀도 기준 <strong style={{color:'#1D9E75'}}>2.5m²/인</strong>으로 산정합니다.<br/>
+                국제 전시 밀도 기준 <strong style={{color:'#18181b'}}>2.5m²/인</strong>으로 산정합니다.<br/>
                 안전·쾌적 관람을 위한 권장 동시 입장 인원의 상한선입니다.
               </PortalTip>
               <strong>{floorAreaCap}명</strong>
@@ -129,7 +129,7 @@ export default function SetupPanel({
                 <PortalTip label="미디어 수용">
                   미디어 아이템의 동시 체험 가능 인원 합계입니다.<br/>
                   각 미디어의 cap 값을 모두 더한 값으로,<br/>
-                  <span style={{color:'#1D9E75'}}>면적 수용보다 낮으면 병목이 발생할 수 있습니다.</span>
+                  <span style={{color:'#18181b'}}>면적 수용보다 낮으면 병목이 발생할 수 있습니다.</span>
                 </PortalTip>
                 <strong>{floorCap}명</strong>
               </div>
@@ -168,7 +168,7 @@ export default function SetupPanel({
                   <span className="bs-size-unit">m</span>
                 </div>
                 <div className="bs-size-area" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <span>{tmpSize.w*tmpSize.h} m² <span style={{color:'#9CA3AF'}}>({(tmpSize.w*tmpSize.h*0.3025).toFixed(1)}평)</span></span>
+                  <span>{tmpSize.w*tmpSize.h} m² <span style={{color:'#a1a1aa'}}>({(tmpSize.w*tmpSize.h*0.3025).toFixed(1)}평)</span></span>
                 </div>
               </div>
             )
@@ -182,10 +182,10 @@ export default function SetupPanel({
               <input type="checkbox" checked={circularFlow}
                 onChange={e=>{ setCircularFlow(e.target.checked); setTimeout(drawBuild,0) }}
                 disabled={simStatus!=='idle'}
-                style={{accentColor:'#1D9E75',cursor:'pointer',width:14,height:14,flexShrink:0}}/>
+                style={{accentColor:'var(--color-primary)',cursor:'pointer',width:14,height:14,flexShrink:0}}/>
               <div style={{display:'flex',flexDirection:'column',gap:2}}>
-                <span style={{fontSize:12,fontWeight:600,color:'#111827'}}>순환형 관람</span>
-                <span style={{fontSize:10,color:'#9CA3AF'}}>입구 = 출구</span>
+                <span style={{fontSize:12,fontWeight:600,color:'var(--color-text)'}}>순환형 관람</span>
+                <span style={{fontSize:10,color:'var(--color-text-muted)'}}>입구 = 출구</span>
               </div>
             </label>
           </div>
@@ -208,9 +208,9 @@ export default function SetupPanel({
 
           {/* 선택된 존 요약 */}
           {selZone && (
-            <div style={{margin:'4px 0 12px',padding:'10px 12px',background:'#ECFDF5',borderRadius:10,border:'1px solid #A7F3D0'}}>
-              <div style={{fontSize:11,fontWeight:600,color:'#059669',marginBottom:8,display:'flex',alignItems:'center',gap:4,textTransform:'uppercase',letterSpacing:'0.06em'}}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style={{margin:'4px 0 12px',padding:'10px 12px',background:'var(--color-success-bg)',borderRadius:10,border:'1px solid var(--color-success-border)'}}>
+              <div style={{fontSize:11,fontWeight:600,color:'var(--color-success)',marginBottom:8,display:'flex',alignItems:'center',gap:4,textTransform:'uppercase',letterSpacing:'0.06em'}}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 {selZone.name}
               </div>
               <div style={{display:'flex',flexDirection:'column',gap:4}}>
@@ -220,10 +220,9 @@ export default function SetupPanel({
                   {label:'면적 수용', value:selZoneAreaCap+'명'},
                   selZone.media.length > 0 && {label:'미디어 수용', value:selZoneMediaCap+'명'},
                 ].filter(Boolean).map(({label,value})=>(
-                  <div key={label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',
-                    background:'#fff',borderRadius:7,padding:'8px 10px',border:'1px solid #D1FAE5'}}>
-                    <span style={{fontSize:11,color:'#6B7280',fontWeight:500}}>{label}</span>
-                    <span style={{fontSize:13,fontWeight:700,color:'#111827'}}>{value}</span>
+                  <div key={label} className="stat-row-u">
+                    <span className="stat-key">{label}</span>
+                    <span className="stat-val">{value}</span>
                   </div>
                 ))}
               </div>
@@ -236,7 +235,7 @@ export default function SetupPanel({
             )}
             {polyDrawing&&(
               <button className="bs-add-btn" onClick={cancelPolyDraw}
-                style={{background:'rgba(220,38,38,0.08)',color:'#DC2626',borderColor:'rgba(220,38,38,0.2)'}}>
+                style={{background:'rgba(220,38,38,0.08)',color:'#ef4444',borderColor:'rgba(220,38,38,0.2)'}}>
                 ✕
               </button>
             )}
@@ -246,7 +245,7 @@ export default function SetupPanel({
             <div style={{marginTop:6,padding:'6px 10px',background:'rgba(90,143,168,0.08)',borderRadius:7,fontSize:10,color:'#5A8FA8',lineHeight:1.5}}>
               캔버스를 클릭해 꼭짓점을 추가하세요.<br/>
               첫 번째 점을 다시 클릭하면 완성됩니다.<br/>
-              <span style={{color:'#999'}}>ESC = 취소</span>
+              <span style={{color:'var(--color-text-muted)'}}>ESC = 취소</span>
             </div>
           )}
         </div>
@@ -283,7 +282,7 @@ export default function SetupPanel({
               <button className="canvas-zoom-btn" onClick={onZoomOut} title="축소">−</button>
               <div style={{width:1,height:16,background:'rgba(0,0,0,0.1)',margin:'0 2px'}}/>
               <button className="canvas-zoom-btn" onClick={onTogglePan} title="이동"
-                style={{background:panMode?'rgba(29,158,117,0.15)':undefined, color:panMode?'#1D9E75':undefined}}>
+                style={{background:panMode?'rgba(9,9,11,0.06)':undefined, color:panMode?'#18181b':undefined}}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
               </button>
             </div>
@@ -292,7 +291,7 @@ export default function SetupPanel({
           {/* ── 팔레트 패널 (좌측 플로팅) ── */}
           {palOpen && (
             <div style={{
-              position:'absolute', left:256, top:16, width:272, zIndex:22,
+              position:'absolute', left:16, top:16, width:272, zIndex:22,
               height:'fit-content', maxHeight:'calc(100% - 32px)',
               display:'flex', flexDirection:'column',
               background:'rgba(255,255,255,0.95)',
@@ -302,14 +301,14 @@ export default function SetupPanel({
               overflow:'hidden',
             }}>
               <div className="dh" style={{justifyContent:'space-between',flexShrink:0}}>
-                <span style={{fontSize:13,fontWeight:600,color:'#111827'}}>Add Media</span>
+                <span style={{fontSize:13,fontWeight:600,color:'#09090b'}}>Add Media</span>
                 <button className="rb" onClick={()=>setPalOpen(false)} title="닫기">✕</button>
               </div>
               <div style={{flex:1,overflowY:'auto',padding:'8px 0'}}>
                 {[['Media', MT],['Facility', FT]].map(([title, items], gi)=>(
                   <div key={title}>
-                    {gi > 0 && <div style={{height:1,background:'#f0f0f0',margin:'6px 0'}}/>}
-                    <div style={{fontSize:10,fontWeight:600,color:'#9CA3AF',letterSpacing:'0.08em',padding:'10px 16px 5px',textTransform:'uppercase'}}>{title}</div>
+                    {gi > 0 && <div style={{height:1,background:'var(--color-border-light)',margin:'6px 0'}}/>}
+                    <div style={{fontSize:10,fontWeight:600,color:'var(--color-text-muted)',letterSpacing:'0.08em',padding:'10px 16px 5px',textTransform:'uppercase'}}>{title}</div>
                     {items.map(m=>(
                       <div key={m.id} className="pal-row" draggable
                         onDragStart={e=>{ palDragRef.current=m; e.dataTransfer.setDragImage(new Image(),0,0) }}
@@ -318,8 +317,8 @@ export default function SetupPanel({
                           <MediaIcon id={m.id} size={14} color={m.color}/>
                         </span>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:12,fontWeight:500,color:'#111827'}}>{m.label}</div>
-                          <div style={{fontSize:10,color:'#9CA3AF'}}>{m.desc}</div>
+                          <div style={{fontSize:12,fontWeight:500,color:'var(--color-text)'}}>{m.label}</div>
+                          <div style={{fontSize:10,color:'var(--color-text-muted)'}}>{m.desc}</div>
                         </div>
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2"><path d="M5 9l2-2 2 2M5 15l2 2 2-2M15 5l2 2 2-2M15 19l2-2 2 2M3 12h4M17 12h4M12 3v4M12 17v4"/></svg>
                       </div>
@@ -382,12 +381,12 @@ export default function SetupPanel({
                     const zHm=(selZone.h*scale).toFixed(1)
                     return (
                       <div style={{display:'flex',alignItems:'center',gap:5}}>
-                        <span style={{fontSize:11,fontWeight:500,color:'#5a7570',background:'#eef3f0',borderRadius:5,padding:'2px 7px'}}>
+                        <span style={{fontSize:11,fontWeight:500,color:'#71717a',background:'#f4f4f5',borderRadius:5,padding:'2px 7px'}}>
                           {idx+1} / {peers.length}
                         </span>
                         <span
                           title="클릭하여 크기 수정"
-                          style={{fontSize:11,fontWeight:500,color:'#5a7570',background:'#eef3f0',borderRadius:5,padding:'2px 7px',cursor:'pointer',display:'flex',alignItems:'center',gap:3}}
+                          style={{fontSize:11,fontWeight:500,color:'#71717a',background:'#f4f4f5',borderRadius:5,padding:'2px 7px',cursor:'pointer',display:'flex',alignItems:'center',gap:3}}
                           onClick={()=>{ if(simStatus==='idle') setDimEdit({w:zWm,h:zHm}) }}
                         >
                           {dimEdit ? (
@@ -401,7 +400,7 @@ export default function SetupPanel({
                                 onChange={e=>setDimEdit(d=>({...d,w:e.target.value}))}
                                 onKeyDown={e=>{ if(e.key==='Enter') commitDim(); if(e.key==='Escape') setDimEdit(null); e.stopPropagation() }}
                                 autoFocus
-                                style={{width:40,fontSize:11,border:'none',background:'transparent',outline:'none',color:'#5a7570',fontWeight:600,padding:0,textAlign:'right'}}
+                                style={{width:40,fontSize:11,border:'none',background:'transparent',outline:'none',color:'#71717a',fontWeight:600,padding:0,textAlign:'right'}}
                               />
                               <span>m ×</span>
                               <input
@@ -409,7 +408,7 @@ export default function SetupPanel({
                                 value={dimEdit.h}
                                 onChange={e=>setDimEdit(d=>({...d,h:e.target.value}))}
                                 onKeyDown={e=>{ if(e.key==='Enter') commitDim(); if(e.key==='Escape') setDimEdit(null); e.stopPropagation() }}
-                                style={{width:40,fontSize:11,border:'none',background:'transparent',outline:'none',color:'#5a7570',fontWeight:600,padding:0,textAlign:'right'}}
+                                style={{width:40,fontSize:11,border:'none',background:'transparent',outline:'none',color:'#71717a',fontWeight:600,padding:0,textAlign:'right'}}
                               />
                               <span>m</span>
                             </span>
@@ -483,21 +482,21 @@ export default function SetupPanel({
               </div>
               {/* 미디어 다각형 그리기 안내 */}
               {mediaPolyDrawing && (
-                <div style={{padding:'7px 16px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
-                  <span style={{fontSize:10,color:'#534AB7',flex:1,lineHeight:1.5}}>
+                <div style={{padding:'7px 16px',background:'rgba(94,53,177,0.07)',borderBottom:'1px solid rgba(94,53,177,0.12)',display:'flex',alignItems:'center',gap:8}}>
+                  <span style={{fontSize:10,color:'#7c3aed',flex:1,lineHeight:1.5}}>
                     캔버스에 형태 그리기 · 꼭짓점 클릭으로 추가<br/>첫 점 재클릭으로 완성
                   </span>
-                  <button style={{fontSize:10,padding:'2px 7px',background:'rgba(220,38,38,0.1)',border:'1px solid rgba(220,38,38,0.2)',borderRadius:5,color:'#DC2626',cursor:'pointer',flexShrink:0}}
+                  <button style={{fontSize:10,padding:'2px 7px',background:'rgba(220,38,38,0.1)',border:'1px solid rgba(220,38,38,0.2)',borderRadius:5,color:'#ef4444',cursor:'pointer',flexShrink:0}}
                     onClick={cancelMediaPolyDraw}>✕</button>
                 </div>
               )}
               {/* 다각형 수정 안내 */}
               {mediaPolyEditingUid && (
-                <div style={{padding:'7px 16px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
-                  <span style={{fontSize:10,color:'#534AB7',flex:1,lineHeight:1.5}}>
+                <div style={{padding:'7px 16px',background:'rgba(94,53,177,0.07)',borderBottom:'1px solid rgba(94,53,177,0.12)',display:'flex',alignItems:'center',gap:8}}>
+                  <span style={{fontSize:10,color:'#7c3aed',flex:1,lineHeight:1.5}}>
                     꼭짓점 드래그로 형태 수정
                   </span>
-                  <button style={{fontSize:10,padding:'2px 10px',background:'#534AB7',border:'none',borderRadius:5,color:'#fff',cursor:'pointer',flexShrink:0,fontWeight:600}}
+                  <button style={{fontSize:10,padding:'2px 10px',background:'#7c3aed',border:'none',borderRadius:5,color:'#fff',cursor:'pointer',flexShrink:0,fontWeight:600}}
                     onClick={exitMediaPolyEdit}>완료</button>
                 </div>
               )}
@@ -579,28 +578,28 @@ export default function SetupPanel({
                             {/* 형태 만들기 */}
                             <div style={{padding:'8px 16px',borderTop:'.5px solid rgba(0,0,0,0.06)'}}>
                               {m.polyVerts?.length>=3 ? (
-                                <div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 8px',background:'rgba(83,74,183,0.05)',borderRadius:7,border:'1px solid rgba(83,74,183,0.15)'}}>
+                                <div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 8px',background:'rgba(94,53,177,0.05)',borderRadius:7,border:'1px solid rgba(94,53,177,0.15)'}}>
                                   {m.rectShape
-                                    ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#534AB7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
+                                    ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
                                     : m.circleShape
-                                      ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#534AB7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/></svg>
-                                      : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#534AB7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 19 7 16 15 8 15 5 7"/></svg>
+                                      ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/></svg>
+                                      : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 19 7 16 15 8 15 5 7"/></svg>
                                   }
-                                  <span style={{fontSize:10,color:'#534AB7',flex:1,fontWeight:500}}>{m.rectShape?'직사각형':m.circleShape?'원형':m.polyVerts.length+'꼭짓점 다각형'}</span>
+                                  <span style={{fontSize:10,color:'#7c3aed',flex:1,fontWeight:500}}>{m.rectShape?'직사각형':m.circleShape?'원형':m.polyVerts.length+'꼭짓점 다각형'}</span>
                                   <button title={mediaPolyEditingUid===m.uid?'완료':'형태 수정'}
                                     onClick={()=>mediaPolyEditingUid===m.uid?exitMediaPolyEdit():enterMediaPolyEdit(m.uid)}
                                     style={{display:'flex',alignItems:'center',justifyContent:'center',width:22,height:22,borderRadius:5,border:'1px solid',cursor:'pointer',flexShrink:0,padding:0,transition:'all .15s',
-                                      background: mediaPolyEditingUid===m.uid?'#534AB7':'transparent',
-                                      borderColor: mediaPolyEditingUid===m.uid?'#534AB7':'rgba(83,74,183,0.35)'}}>
+                                      background: mediaPolyEditingUid===m.uid?'#7c3aed':'transparent',
+                                      borderColor: mediaPolyEditingUid===m.uid?'#7c3aed':'rgba(124,58,237,0.35)'}}>
                                     {mediaPolyEditingUid===m.uid
                                       ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                                      : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#534AB7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                      : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                     }
                                   </button>
                                   <button title="형태 삭제"
                                     onClick={()=>clearMediaPoly(selZone.id,m.uid)}
                                     style={{display:'flex',alignItems:'center',justifyContent:'center',width:22,height:22,borderRadius:5,border:'1px solid rgba(220,38,38,0.25)',cursor:'pointer',flexShrink:0,padding:0,background:'transparent'}}>
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
                                   </button>
                                 </div>
                               ) : (
@@ -616,9 +615,9 @@ export default function SetupPanel({
                                     <button key={label} disabled={mediaPolyDrawing} onClick={onClick} title={title}
                                       style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',gap:4,
                                         padding:'6px 0',borderRadius:7,cursor:'pointer',
-                                        border:'1.5px solid rgba(83,74,183,0.4)',
-                                        background:'rgba(83,74,183,0.04)',
-                                        color:mediaPolyDrawing?'#bbb':'#534AB7',
+                                        border:'1.5px solid rgba(94,53,177,0.4)',
+                                        background:'rgba(94,53,177,0.04)',
+                                        color:mediaPolyDrawing?'#bbb':'#7c3aed',
                                         fontSize:10,fontWeight:500,transition:'all .15s'}}>
                                       {icon}{label}
                                     </button>

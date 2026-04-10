@@ -58,9 +58,9 @@ export const makeSlotCfg = (total = 80) => ({
 
 export const SEGS = [
   { key:'individual',   label:'개인(1인)',         short:'개인',     color:'#378ADD', r:4 },
-  { key:'smallGroup',   label:'소그룹 2~5인',       short:'소그룹',   color:'#1D9E75', r:5 },
+  { key:'smallGroup',   label:'소그룹 2~5인',       short:'소그룹',   color:'#18181b', r:5 },
   { key:'studentGroup', label:'단체-학생 10~30인',  short:'단체-학생', color:'#7F77DD', r:8 },
-  { key:'corpGroup',    label:'단체-기업 10~50인',  short:'단체-기업', color:'#534AB7', r:8 },
+  { key:'corpGroup',    label:'단체-기업 10~50인',  short:'단체-기업', color:'#7c3aed', r:8 },
   { key:'genGroup',     label:'단체-일반 6~20인',   short:'단체-일반', color:'#F07D4A', r:7 },
 ]
 

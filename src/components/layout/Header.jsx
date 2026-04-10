@@ -15,9 +15,13 @@ export default function Header({ projectName, setProjectName, scenarioName, setS
                   setProjectName(trimmed)
                   localStorage.setItem('exsim_projectName', trimmed)
                 }
-              }} title="프로젝트 이름 변경">✎</button>
+              }} title="프로젝트 이름 변경">
+                <span className="material-icons mi-sm">edit</span>
+              </button>
             </div>
-            <span className="hdr-breadcrumb-sep">›</span>
+            <span className="hdr-breadcrumb-sep">
+              <span className="material-icons mi-sm" style={{opacity:0.38,fontSize:16}}>chevron_right</span>
+            </span>
             <div className="hdr-scenario-name">
               <span>{scenarioName}</span>
               <button className="hdr-project-change" onClick={() => {
@@ -27,7 +31,9 @@ export default function Header({ projectName, setProjectName, scenarioName, setS
                   setScenarioName(trimmed)
                   localStorage.setItem('exsim_scenarioName', trimmed)
                 }
-              }} title="시나리오 이름 변경">✎</button>
+              }} title="시나리오 이름 변경">
+                <span className="material-icons mi-sm">edit</span>
+              </button>
             </div>
           </div>
         )}
@@ -59,26 +65,24 @@ export default function Header({ projectName, setProjectName, scenarioName, setS
               setScenarioName('시나리오 1')
               setProjectName('')
             }
-          }}>+</button>
+          }}>
+            <span className="material-icons">add</span>
+          </button>
           <span className="hdr-tooltip">새 프로젝트</span>
         </div>
 
         {/* 저장 */}
         <div className="hdr-tooltip-wrap">
           <button className="hdr-icon-btn" onClick={saveSettings}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 1v8M4 6l3 3 3-3"/><path d="M2 12h10"/>
-            </svg>
+            <span className="material-icons">download</span>
           </button>
           <span className="hdr-tooltip">저장</span>
         </div>
 
-        {/* 불러오기 — label 방식으로 직접 input 트리거 */}
+        {/* 불러오기 */}
         <div className="hdr-tooltip-wrap">
-          <label className="hdr-icon-btn" htmlFor="exsim-load-input" style={{ cursor:'pointer', display:'inline-flex', alignItems:'center', justifyContent:'center' }}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 9V1M4 4l3-3 3 3"/><path d="M2 12h10"/>
-            </svg>
+          <label className="hdr-icon-btn" htmlFor="exsim-load-input" style={{ cursor:'pointer' }}>
+            <span className="material-icons">upload</span>
           </label>
           <span className="hdr-tooltip">불러오기</span>
         </div>

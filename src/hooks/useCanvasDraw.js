@@ -187,7 +187,7 @@ export function useCanvasDraw({
       const isEntry = false
       const isDragging = dragZ && z.id === dragZ.id
       const isConflict = isDragging && dragOverlap
-      drawZoneShape(ctx, z, '#F7F9F8', isConflict ? '#DC2626' : isSel ? '#5A8FA8' : 'rgba(0,0,0,0.15)', isConflict ? 0.8 : isSel ? 0.7 : 0.4)
+      drawZoneShape(ctx, z, '#F7F9F8', isConflict ? '#ef4444' : isSel ? '#5A8FA8' : 'rgba(0,0,0,0.15)', isConflict ? 0.8 : isSel ? 0.7 : 0.4)
       const orderNum = zi + 1
       ctx.fillStyle = isSel ? '#0C447C' : 'rgba(0,0,0,0.5)'
       ctx.font = '500 5px sans-serif'; ctx.textAlign = 'center'
@@ -307,7 +307,7 @@ export function useCanvasDraw({
         drawMIcon(ctx, m, cx2 - MS / 2, cy2 - MS / 2, () => drawBuildRef.current?.(), MS, MS)
         const maxY = Math.max(...m.polyVerts.map(v => v.y))
         ctx.font = 'bold 3.5px sans-serif'; ctx.textAlign = 'center'
-        ctx.fillStyle = '#534AB7'
+        ctx.fillStyle = '#7c3aed'
         ctx.fillText('E' + lvl, cx2, maxY + 5)
         ctx.textAlign = 'left'
         ctx.restore()
@@ -320,7 +320,7 @@ export function useCanvasDraw({
       const clampedH = Math.min(fpH, z.y + z.h - m.py)
       drawMIcon(ctx, m, m.px, m.py, () => drawBuildRef.current?.(), clampedW, clampedH)
       ctx.font = 'bold 3.5px sans-serif'; ctx.textAlign = 'center'
-      ctx.fillStyle = '#534AB7'
+      ctx.fillStyle = '#7c3aed'
       ctx.fillText('E' + lvl, m.px + MS / 2, m.py + MS + 4)
       ctx.textAlign = 'left'
     }))
@@ -397,7 +397,7 @@ export function useCanvasDraw({
       const rawMx = mxRef.current, rawMy = myRef.current
       const mx = rawMx, my = rawMy
       ctx.save()
-      ctx.strokeStyle = '#534AB7'; ctx.lineWidth = 0.9
+      ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 0.9
       ctx.setLineDash([3, 2])
       ctx.beginPath()
       if (pts.length > 0) {
@@ -407,7 +407,7 @@ export function useCanvasDraw({
       ctx.lineTo(mx, my)
       ctx.stroke(); ctx.setLineDash([])
       if (pts.length >= 3) {
-        ctx.fillStyle = 'rgba(83,74,183,0.06)'
+        ctx.fillStyle = 'rgba(94,53,177,0.06)'
         ctx.beginPath()
         ctx.moveTo(pts[0].x, pts[0].y)
         pts.forEach((p, i) => { if (i > 0) ctx.lineTo(p.x, p.y) })
@@ -415,9 +415,9 @@ export function useCanvasDraw({
       }
       pts.forEach((p, i) => {
         ctx.beginPath(); ctx.arc(p.x, p.y, i === 0 ? 2.5 : 2, 0, Math.PI * 2)
-        ctx.fillStyle = i === 0 ? '#534AB7' : 'rgba(83,74,183,0.6)'; ctx.fill()
+        ctx.fillStyle = i === 0 ? '#7c3aed' : 'rgba(124,58,237,0.6)'; ctx.fill()
         if (i === 0 && pts.length >= 3) {
-          ctx.strokeStyle = 'rgba(83,74,183,0.4)'; ctx.lineWidth = 0.5
+          ctx.strokeStyle = 'rgba(94,53,177,0.4)'; ctx.lineWidth = 0.5
           ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI * 2); ctx.stroke()
         }
       })
@@ -446,12 +446,19 @@ export function useCanvasDraw({
     const dynCH = Math.max(160, Math.min(600, Math.round(CW * sz.h / sz.w)))
     const cssW = fitCanvasWidth(canvas, dynCH)
     const cssH = Math.round(cssW * sz.h / sz.w)
-    canvas.width = Math.round(cssW * DPR); canvas.height = Math.round(cssH * DPR)
-    canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px'
+    const newW = Math.round(cssW * DPR), newH = Math.round(cssH * DPR)
+    if (canvas.width !== newW || canvas.height !== newH) {
+      canvas.width = newW; canvas.height = newH
+      canvas.style.width = cssW + 'px'; canvas.style.height = cssH + 'px'
+    }
     const ctx = canvas.getContext('2d')
     const scale = cssW / CW * DPR
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+    ctx.globalAlpha = 0.18
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.globalAlpha = 1
     ctx.scale(scale, scale)
-    ctx.clearRect(0, 0, CW, dynCH)
     const clipR = 10 * CW / cssW
     const pad = clipR * 0.5
     ctx.beginPath(); ctx.roundRect(pad, pad, CW - pad * 2, dynCH - pad * 2, clipR); ctx.clip()
@@ -486,11 +493,11 @@ export function useCanvasDraw({
     sortedSimZs.forEach((z, zi) => {
       const cnt = agents.filter(a => a.zoneId === z.id && !a.exited).reduce((s, a) => s + a.size, 0)
       const cap = zCap(z), crowded = cnt >= cap
-      drawZoneShape(ctx, z, crowded ? 'rgba(234,75,74,0.06)' : 'rgba(255,255,255,1)', crowded ? '#E24B4A' : 'rgba(0,0,0,0.15)', crowded ? 0.6 : 0.4)
+      drawZoneShape(ctx, z, crowded ? 'rgba(234,75,74,0.06)' : 'rgba(255,255,255,1)', crowded ? '#ef4444' : 'rgba(0,0,0,0.15)', crowded ? 0.6 : 0.4)
       ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.font = '500 5px sans-serif'; ctx.textAlign = 'center'
       ctx.fillText(`${zi + 1}. ${z.name}`, z.x + z.w / 2, z.y + 10)
       ctx.font = '5px sans-serif'
-      ctx.fillStyle = crowded ? '#E24B4A' : 'rgba(0,0,0,0.28)'
+      ctx.fillStyle = crowded ? '#ef4444' : 'rgba(0,0,0,0.28)'
       ctx.fillText(`${cnt}/${cap}인`, z.x + z.w / 2, z.y + z.h - 8); ctx.textAlign = 'left'
     })
 
@@ -528,13 +535,13 @@ export function useCanvasDraw({
       if (expA.length > 0) {
         const avgP = expA.reduce((s, a) => s + (1 - a.dwellLeft / a.dwellTotal), 0) / expA.length
         ctx.beginPath(); ctx.arc(icx, icy, pr, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(29,158,117,0.2)'; ctx.lineWidth = 1; ctx.stroke()
-        ctx.beginPath(); ctx.arc(icx, icy, pr, -Math.PI / 2, -Math.PI / 2 + avgP * Math.PI * 2); ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 1; ctx.stroke()
+        ctx.beginPath(); ctx.arc(icx, icy, pr, -Math.PI / 2, -Math.PI / 2 + avgP * Math.PI * 2); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 1; ctx.stroke()
         ctx.font = '4px sans-serif'; ctx.textAlign = 'center'
-        ctx.fillStyle = full ? '#E24B4A' : '#1D9E75'
+        ctx.fillStyle = full ? '#ef4444' : '#18181b'
         ctx.fillText(`${busy}/${m.cap}`, icx, icy + pr + 2)
       } else {
         ctx.font = '4px sans-serif'; ctx.textAlign = 'center'
-        ctx.fillStyle = full ? '#E24B4A' : 'rgba(0,0,0,0.3)'
+        ctx.fillStyle = full ? '#ef4444' : 'rgba(0,0,0,0.3)'
         ctx.fillText(`0/${m.cap}`, icx, icy + pr + 2)
       }
       ctx.textAlign = 'left'
@@ -544,9 +551,19 @@ export function useCanvasDraw({
     flashRef.current = flashRef.current.filter(f => {
       const p = Math.min((now - f.t) / 700, 1)
       ctx.globalAlpha = (1 - p) * 0.95; ctx.font = 'bold 4px sans-serif'; ctx.textAlign = 'center'
-      ctx.fillStyle = '#EF9F27'; ctx.fillText('SKIP', f.x, f.y - p * 14)
+      ctx.fillStyle = '#d97706'; ctx.fillText('SKIP', f.x, f.y - p * 14)
       ctx.globalAlpha = 1; ctx.textAlign = 'left'
       return p < 1
+    })
+
+    // Lerp: smoothly move display position toward simulation target
+    const LERP_K = 0.12
+    agentsRef.current.forEach(a => {
+      if (a.exited) return
+      if (a.targetX != null) {
+        a.x += (a.targetX - a.x) * LERP_K
+        a.y += (a.targetY - a.y) * LERP_K
+      }
     })
 
     agents.forEach(a => {
@@ -558,11 +575,11 @@ export function useCanvasDraw({
         if (vtC) { ctx.beginPath(); ctx.arc(a.x, a.y, a.r + 1.8, 0, Math.PI * 2); ctx.strokeStyle = vtC; ctx.lineWidth = 1.5; ctx.globalAlpha = 0.65; ctx.stroke(); ctx.globalAlpha = 1 }
       }
       ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2)
-      ctx.fillStyle = isWait ? '#E24B4A' : a.color; ctx.globalAlpha = 0.88; ctx.fill(); ctx.globalAlpha = 1
+      ctx.fillStyle = isWait ? '#ef4444' : a.color; ctx.globalAlpha = 0.88; ctx.fill(); ctx.globalAlpha = 1
       if (isExp && a.dwellTotal > 0) {
         const prog = Math.max(0, Math.min(1, 1 - a.dwellLeft / a.dwellTotal)), pr = a.r + 2.5
         ctx.beginPath(); ctx.arc(a.x, a.y, pr, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(29,158,117,0.2)'; ctx.lineWidth = 1.5; ctx.stroke()
-        ctx.beginPath(); ctx.arc(a.x, a.y, pr, -Math.PI / 2, -Math.PI / 2 + prog * Math.PI * 2); ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 1.5; ctx.stroke()
+        ctx.beginPath(); ctx.arc(a.x, a.y, pr, -Math.PI / 2, -Math.PI / 2 + prog * Math.PI * 2); ctx.strokeStyle = '#18181b'; ctx.lineWidth = 1.5; ctx.stroke()
       }
       if (a.size > 1) {
         ctx.fillStyle = '#fff'; ctx.font = 'bold 5px sans-serif'; ctx.textAlign = 'center'
@@ -649,10 +666,10 @@ export function useCanvasDraw({
       const zConvRate = zEntries > 0 ? zEngaged / zEntries * 100 : 0
       const hasHeat = (heatData[z.id] || 0) > 0
       let statusLabel = null, statusColor = null
-      if (zAvgWait > 20)                               { statusLabel = '● 병목'; statusColor = '#DC2626' }
-      else if (ratio > 0.6 && zAvgWait > 5)           { statusLabel = '● 과밀'; statusColor = '#D97706' }
-      else if (hasHeat && ratio < 0.2)                 { statusLabel = '● 저활용'; statusColor = '#6B7280' }
-      else if (zEntries > 0 && zConvRate > 60 && zAvgWait < 10) { statusLabel = '● 효율'; statusColor = '#059669' }
+      if (zAvgWait > 20)                               { statusLabel = '● 병목'; statusColor = '#ef4444' }
+      else if (ratio > 0.6 && zAvgWait > 5)           { statusLabel = '● 과밀'; statusColor = '#d97706' }
+      else if (hasHeat && ratio < 0.2)                 { statusLabel = '● 저활용'; statusColor = '#71717a' }
+      else if (zEntries > 0 && zConvRate > 60 && zAvgWait < 10) { statusLabel = '● 효율'; statusColor = '#16a34a' }
 
       if (statusLabel) {
         ctx.font = 'bold 4px sans-serif'; ctx.textAlign = 'right'
@@ -662,7 +679,7 @@ export function useCanvasDraw({
       }
 
       ctx.font = '4.5px sans-serif'; ctx.textAlign = 'center'
-      ctx.fillStyle = 'rgba(0,0,0,0.38)'
+      ctx.fillStyle = '#a1a1aa'
       if (zEntries > 0) {
         ctx.fillText(`진입 ${zEntries}명 · 대기 ${Math.round(zAvgWait)}초`, z.x + z.w / 2, z.y + z.h - 8)
       } else {
@@ -675,7 +692,7 @@ export function useCanvasDraw({
       const ms = skipData[m.uid] || { skip: 0, exp: 0 }
       const total = ms.skip + ms.exp
       const mr = total > 0 ? Math.round(ms.skip / total * 100) : 0
-      const sc = mr > 50 ? '#7C3AED' : mr > 20 ? '#D97706' : '#059669'
+      const sc = mr > 50 ? '#7c3aed' : mr > 20 ? '#d97706' : '#16a34a'
       if (m.polyVerts?.length >= 3) {
         ctx.save()
         ctx.beginPath()
@@ -716,7 +733,7 @@ export function useCanvasDraw({
       const ms = skipData[m.uid] || { skip: 0, exp: 0 }
       const total = ms.skip + ms.exp
       const mr = total > 0 ? Math.round(ms.skip / total * 100) : 0
-      const bc = mr > 50 ? '#7C3AED' : mr > 20 ? '#D97706' : '#059669'
+      const bc = mr > 50 ? '#7c3aed' : mr > 20 ? '#d97706' : '#16a34a'
       let icx, icy
       if (m.polyVerts?.length >= 3) {
         icx = m.polyVerts.reduce((s, v) => s + v.x, 0) / m.polyVerts.length
