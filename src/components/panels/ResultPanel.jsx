@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import Chart from 'chart.js/auto'
 import useSimStore from '../../store/simulationStore'
 
-// 표정 아이콘: level 'good' | 'neutral' | 'caution' | 'bad'
+// ── Face icon ──
 const FACE = {
   good:    { emoji:'😊', bg:'#dcfce7', border:'#86efac', color:'#15803d' },
   neutral: { emoji:'😐', bg:'#fef9c3', border:'#fde047', color:'#a16207' },
@@ -23,9 +23,8 @@ function FaceIcon({ level, size=40 }) {
   )
 }
 
-// ── 전체 건강도 점수 카드 ──
+// ── 전시 건강도 점수 카드 (redesigned) ──
 function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
-  // Normalize each metric to 0-100 score (higher = better)
   const s1 = Math.min(100, flowEff ?? 0)
   const s2 = Math.min(100, convRate ?? 0)
   const s3 = avgWait != null ? Math.max(0, 100 - avgWait * 2.5) : 50
@@ -34,103 +33,164 @@ function HealthScoreCard({ flowEff, convRate, avgWait, avgSkipRate, setTab }) {
 
   const grade = score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : 'D'
   const gradeColor = grade === 'A' ? '#059669' : grade === 'B' ? '#2563EB' : grade === 'C' ? '#D97706' : '#DC2626'
-  const gradeBg = grade === 'A' ? '#ECFDF5' : grade === 'B' ? '#EFF6FF' : grade === 'C' ? '#FFFBEB' : '#FEF2F2'
-  const gradeText = grade === 'A' ? '우수한 전시 운영 상태입니다' : grade === 'B' ? '일부 개선으로 완성도를 높일 수 있습니다' : grade === 'C' ? '주요 지표에 개선이 필요합니다' : '즉각적인 개선 조치가 필요합니다'
+  const gradeBg    = grade === 'A' ? '#ECFDF5' : grade === 'B' ? '#EFF6FF' : grade === 'C' ? '#FFFBEB' : '#FEF2F2'
+  const gradeText  = grade === 'A' ? '우수한 전시 운영 상태입니다' : grade === 'B' ? '일부 개선으로 완성도를 높일 수 있습니다' : grade === 'C' ? '주요 지표에 개선이 필요합니다' : '즉각적인 개선 조치가 필요합니다'
 
-  const metrics = [
-    { label: '도달률', val: s1, unit: '%', raw: flowEff },
-    { label: '체험 전환율', val: s2, unit: '%', raw: convRate },
-    { label: '혼잡도', val: s3, unit: '', raw: avgWait != null ? avgWait + '초' : '-', invert: true },
-    { label: '스킵율', val: s4, unit: '', raw: avgSkipRate != null ? avgSkipRate + '%' : '-', invert: true },
+  const subScores = [
+    { label: '동선 도달률', val: s1, color: '#1D9E75' },
+    { label: '체험 전환율', val: s2, color: '#6366f1' },
+    { label: '혼잡도',     val: s3, color: '#F59E0B' },
+    { label: '참여도',     val: s4, color: '#7C3AED' },
+  ]
+
+  const metricPills = [
+    { label: '도달률',   raw: flowEff != null ? `${flowEff}%` : '-' },
+    { label: '전환율',   raw: convRate != null ? `${convRate}%` : '-' },
+    { label: '혼잡도',   raw: avgWait != null ? `${avgWait}초` : '-' },
+    { label: '스킵율',   raw: avgSkipRate != null ? `${avgSkipRate}%` : '-' },
   ]
 
   return (
     <div style={{
-      background: gradeBg,
-      border: `1px solid ${gradeColor}25`,
-      borderLeft: `4px solid ${gradeColor}`,
-      borderRadius: 10, padding: '12px 16px', marginBottom: 16,
-      display: 'flex', gap: 14, alignItems: 'center',
+      background: '#0F172A',
+      borderRadius: 14,
+      padding: '20px 24px',
+      marginBottom: 16,
+      position: 'relative',
+      overflow: 'hidden',
     }}>
-      {/* Grade badge */}
+      {/* subtle background accent */}
       <div style={{
-        width: 46, height: 46, borderRadius: '50%', flexShrink: 0,
-        background: '#fff', border: `2.5px solid ${gradeColor}`,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        boxShadow: `0 1px 8px ${gradeColor}20`,
-      }}>
-        <span style={{ fontSize: 20, fontWeight: 900, color: gradeColor, lineHeight: 1 }}>{grade}</span>
-      </div>
-      {/* Text */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: gradeColor, marginBottom: 4 }}>{gradeText}</div>
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-          {metrics.map(m => (
-            <span key={m.label} style={{ fontSize: 11, color: '#6B7280' }}>
-              {m.label}: <strong style={{ color: '#111827', fontWeight: 700 }}>{m.raw ?? '-'}</strong>
-            </span>
-          ))}
+        position: 'absolute', right: -30, top: -30,
+        width: 160, height: 160, borderRadius: '50%',
+        background: `${gradeColor}18`, pointerEvents: 'none',
+      }}/>
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
+        {/* Score + Grade */}
+        <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 72 }}>
+          <div style={{
+            fontSize: 52, fontWeight: 900, color: gradeColor,
+            lineHeight: 1, letterSpacing: '-0.03em',
+          }}>{score}</div>
+          <div style={{ fontSize: 10, color: '#64748B', fontWeight: 600, marginTop: 2 }}>/ 100</div>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            width: 36, height: 36, borderRadius: '50%',
+            background: `${gradeColor}22`, border: `2px solid ${gradeColor}`,
+            marginTop: 8,
+          }}>
+            <span style={{ fontSize: 18, fontWeight: 900, color: gradeColor }}>{grade}</span>
+          </div>
         </div>
+
+        {/* Right side */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#F1F5F9', marginBottom: 4 }}>
+            전시 건강도
+          </div>
+          <div style={{ fontSize: 11, color: gradeColor, fontWeight: 600, marginBottom: 12 }}>
+            {gradeText}
+          </div>
+
+          {/* Metric pills row */}
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 14 }}>
+            {metricPills.map(m => (
+              <span key={m.label} style={{
+                background: '#1E293B', borderRadius: 20,
+                padding: '3px 10px', fontSize: 10, color: '#94A3B8',
+                border: '1px solid #334155',
+              }}>
+                <span style={{ color: '#64748B' }}>{m.label} </span>
+                <strong style={{ color: '#F1F5F9', fontWeight: 700 }}>{m.raw}</strong>
+              </span>
+            ))}
+          </div>
+
+          {/* Sub-score bars */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {subScores.map(ss => (
+              <div key={ss.label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 9, color: '#64748B', fontWeight: 600, minWidth: 60, flexShrink: 0 }}>{ss.label}</span>
+                <div style={{ flex: 1, height: 4, background: '#1E293B', borderRadius: 2, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${Math.min(100, ss.val)}%`,
+                    background: ss.color,
+                    borderRadius: 2,
+                    transition: 'width 0.4s ease',
+                  }}/>
+                </div>
+                <span style={{ fontSize: 9, color: '#94A3B8', fontWeight: 700, minWidth: 30, textAlign: 'right' }}>{Math.round(ss.val)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        {(grade === 'C' || grade === 'D') && setTab && (
+          <button onClick={() => setTab('build')} style={{
+            flexShrink: 0, alignSelf: 'center',
+            background: gradeColor, color: '#fff',
+            border: 'none', borderRadius: 8, padding: '8px 14px',
+            fontSize: 11, fontWeight: 700, cursor: 'pointer',
+            boxShadow: `0 2px 12px ${gradeColor}50`, whiteSpace: 'nowrap',
+          }}>
+            Build →
+          </button>
+        )}
       </div>
-      {/* Score */}
-      <div style={{ flexShrink: 0, textAlign: 'center' }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: gradeColor, lineHeight: 1 }}>{score}</div>
-        <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginTop: 2 }}>점수</div>
-      </div>
-      {/* CTA */}
-      {(grade === 'C' || grade === 'D') && setTab && (
-        <button onClick={() => setTab('build')} style={{
-          flexShrink: 0, background: gradeColor, color: '#fff',
-          border: 'none', borderRadius: 8, padding: '7px 12px',
-          fontSize: 11, fontWeight: 700, cursor: 'pointer',
-          boxShadow: `0 2px 8px ${gradeColor}40`, whiteSpace: 'nowrap',
-        }}>
-          Build →
-        </button>
-      )}
     </div>
   )
 }
 
-// ── 개선 액션 플랜 ──
+// ── 개선 액션 플랜 constants ──
 const ACTION_PRIORITY = {
-  urgent: { label: '긴급', color: '#DC2626', bg: '#FEF2F2', dot: '🔴' },
+  urgent:    { label: '긴급', color: '#DC2626', bg: '#FEF2F2', dot: '🔴' },
   recommend: { label: '권장', color: '#D97706', bg: '#FFFBEB', dot: '🟡' },
-  maintain: { label: '유지', color: '#059669', bg: '#ECFDF5', dot: '🟢' },
+  maintain:  { label: '유지', color: '#059669', bg: '#ECFDF5', dot: '🟢' },
 }
 const ACTION_CATEGORY = {
-  zone: '구역 배치',
-  media: '미디어 설정',
-  content: '콘텐츠',
-  flow: '동선 유도',
+  zone:     '구역 배치',
+  media:    '미디어 설정',
+  content:  '콘텐츠',
+  flow:     '동선 유도',
   capacity: '수용 인원',
 }
 
+// ── ActionCard (redesigned) ──
 function ActionCard({ priority, category, title, detail, onBuild, setTab }) {
   const p = ACTION_PRIORITY[priority]
   return (
     <div style={{
-      background: '#fff', border: `1px solid ${p.color}20`,
-      borderLeft: `3px solid ${p.color}`,
-      borderRadius: 8, padding: '10px 14px', marginBottom: 8,
-      display: 'flex', alignItems: 'flex-start', gap: 10,
+      background: '#fff',
+      borderRadius: '0 8px 8px 0',
+      padding: '12px 16px',
+      marginBottom: 8,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      display: 'flex', alignItems: 'flex-start', gap: 12,
+      border: `1px solid ${p.color}18`,
+      borderLeft: `4px solid ${p.color}`,
     }}>
-      <span style={{ fontSize: 14, flexShrink: 0, marginTop: 1 }}>{p.dot}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
           <span style={{
-            fontSize: 9, fontWeight: 600, color: p.color,
-            background: p.bg, borderRadius: 3, padding: '1px 5px',
+            fontSize: 10, fontWeight: 700, color: p.color,
+            background: p.bg, borderRadius: 4, padding: '2px 7px',
+            border: `1px solid ${p.color}30`, letterSpacing: '0.02em',
           }}>{p.label}</span>
-          <span style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600 }}>{ACTION_CATEGORY[category] || category}</span>
+          <span style={{
+            fontSize: 9, color: '#9CA3AF', fontWeight: 600,
+            background: '#F3F4F6', borderRadius: 3, padding: '1px 5px',
+          }}>{ACTION_CATEGORY[category] || category}</span>
         </div>
-        <div style={{ fontSize: 12, fontWeight: 600, color: '#222', marginBottom: detail ? 2 : 0 }}>{title}</div>
-        {detail && <div style={{ fontSize: 11, color: '#666', lineHeight: 1.45 }}>{detail}</div>}
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: detail ? 3 : 0, lineHeight: 1.4 }}>{title}</div>
+        {detail && <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.5 }}>{detail}</div>}
       </div>
       {setTab && (
         <button onClick={() => setTab('build')} style={{
           flexShrink: 0, background: '#E6F7F1', border: '1px solid #A7E3CD',
-          borderRadius: 6, padding: '4px 10px', fontSize: 10, fontWeight: 700,
+          borderRadius: 6, padding: '5px 12px', fontSize: 10, fontWeight: 700,
           color: '#1D9E75', cursor: 'pointer', whiteSpace: 'nowrap', alignSelf: 'center',
         }}>
           Build →
@@ -140,6 +200,45 @@ function ActionCard({ priority, category, title, detail, onBuild, setTab }) {
   )
 }
 
+// ── Priority section banner ──
+function PriorityBanner({ dot, label, count, color, bg, borderColor }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 8,
+      background: bg, border: `1px solid ${borderColor || color + '30'}`,
+      borderRadius: 8, padding: '8px 14px', marginBottom: 8, marginTop: 4,
+    }}>
+      <span style={{ fontSize: 14 }}>{dot}</span>
+      <span style={{ fontSize: 12, fontWeight: 800, color, letterSpacing: '-0.01em' }}>
+        {label} {count}건
+      </span>
+      <span style={{ fontSize: 10, color, opacity: 0.75, marginLeft: 'auto' }}>
+        {label === '긴급' ? '즉시 개선 필요' : label === '권장' ? '개선 시 효과 기대' : '현재 상태 유지'}
+      </span>
+    </div>
+  )
+}
+
+// ── Section title helper ──
+function SectionTitle({ children, sub }) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{
+        width: 24, height: 3, background: '#1D9E75',
+        borderRadius: 2, marginBottom: 6,
+      }}/>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+        <span style={{
+          fontSize: 13, fontWeight: 800, color: '#0F172A',
+          letterSpacing: '-0.02em',
+        }}>{children}</span>
+        {sub && <span style={{ fontSize: 10, fontWeight: 500, color: '#9CA3AF' }}>{sub}</span>}
+      </div>
+    </div>
+  )
+}
+
+// ── ReportView ──
 function ReportView({ data, visible=true, setTab }) {
   const chartRef = useRef(null)
   const chartInst = useRef(null)
@@ -218,7 +317,7 @@ function ReportView({ data, visible=true, setTab }) {
 
   if (!srs.length && !rzones.length) return null
 
-  // Pre-compute summary metrics for HealthScoreCard + ActionPlan
+  // Pre-compute summary metrics
   const _visitedZones = rzones.filter(z=>z.entries>0).length
   const _totalZones = rzones.length
   const _flowEffNum = _totalZones>0 ? Math.round(_visitedZones/_totalZones*100) : (data?.flowEff||0)
@@ -228,8 +327,17 @@ function ReportView({ data, visible=true, setTab }) {
   const _totWaitW = rzones.reduce((s,z)=>s+(z.avgWait||0)*(z.entries||0),0)
   const _avgWait = _totEnt>0 ? Math.round(_totWaitW/_totEnt) : (data?.avgWait||0)
 
+  // Pre-compute action plan for brief summary
+  const _urgentCount = (()=>{
+    let n = 0
+    rzones.filter(z=>(z.avgWait||0)>20).forEach(()=>n++)
+    allMedia.filter(m=>m.skipRate>50&&m.exposure>0).forEach(()=>n++)
+    if (_totEnt>0 && _engRateNum<20) n++
+    return n
+  })()
+
   return (<>
-    {/* 전시 건강도 */}
+    {/* ── 전시 건강도 ── */}
     {(_totalZones > 0 || srs.length > 0) && (
       <HealthScoreCard
         flowEff={_flowEffNum}
@@ -239,201 +347,50 @@ function ReportView({ data, visible=true, setTab }) {
         setTab={setTab}
       />
     )}
-    {/* ① 메인 KPI 4개 */}
-    {(()=>{
-      const visitedZones = _visitedZones
-      const totalZones = _totalZones
-      const flowEffNum = _flowEffNum
-      const totEnt = _totEnt
-      const totEnged = _totEnged
-      const engRateNum = _engRateNum
-      const avgDw = srs.length ? Math.round(srs.reduce((s,r)=>s+(r.avgDwell||0),0)/srs.length) : 0
-      const avgWait = _avgWait
-      const hasFlow = totalZones > 0 || data?.flowEff != null
-      const hasEng = totEnt > 0 || data?.engRate != null
-      return (
-        <div className="rpt-kpi-row">
-          <div className="rpt-kpi" style={{borderTop:'3px solid #1D9E75'}}>
-            <span className="rpt-kpi-l">도달률</span>
-            <span className={`rpt-kpi-v${hasFlow&&flowEffNum>=70?' ok':hasFlow&&flowEffNum<40?' warn':''}`}>
-              {hasFlow?flowEffNum:'-'}<small>{hasFlow?'%':''}</small>
-            </span>
-            <span className="rpt-kpi-sub">{visitedZones}/{totalZones} 구역 방문</span>
-          </div>
-          <div className="rpt-kpi" style={{borderTop:'3px solid #6366f1'}}>
-            <span className="rpt-kpi-l">체험 전환율</span>
-            <span className={`rpt-kpi-v${hasEng&&engRateNum>=60?' ok':hasEng&&engRateNum<30?' warn':''}`}>
-              {hasEng?engRateNum:'-'}<small>{hasEng?'%':''}</small>
-            </span>
-            <span className="rpt-kpi-sub">{totEnged}/{totEnt} 체험</span>
-          </div>
-          <div className="rpt-kpi" style={{borderTop:'3px solid #F59E0B'}}>
-            <span className="rpt-kpi-l">평균 체류시간</span>
-            <span className="rpt-kpi-v">{avgDw>0?avgDw:'-'}<small>{avgDw>0?'초':''}</small></span>
-            <span className="rpt-kpi-sub">슬롯 평균</span>
-          </div>
-          <div className="rpt-kpi" style={{borderTop:`3px solid ${avgWait>20?'#DC2626':avgWait>10?'#D97706':'#E4E6EA'}`}}>
-            <span className="rpt-kpi-l">평균 혼잡도</span>
-            <span className={`rpt-kpi-v${avgWait>20?' warn':''}`}>{avgWait}<small>초</small></span>
-            <span className="rpt-kpi-sub">{totV}명 입장</span>
-          </div>
-        </div>
-      )
-    })()}
-    {/* 보조 지표 */}
-    <div style={{display:'flex',gap:20,marginBottom:16,padding:'8px 0',borderBottom:'1px solid #E4E6EA',flexWrap:'wrap'}}>
-      <span style={{fontSize:11,color:'#6B7280'}}>평균 스킵율 <strong style={{color:avgSR>30?'#DC2626':avgSR>10?'#D97706':'#059669',fontWeight:700}}>{avgSR}%</strong></span>
-      <span style={{fontSize:11,color:'#6B7280'}}>평균 몰입 강도 <strong style={{color:'#7C3AED',fontWeight:700}}>{avgEng!=='-'?`★${avgEng}`:'-'}</strong></span>
-      <span style={{fontSize:11,color:'#6B7280'}}>병목 발생 <strong style={{color:totBN>0?'#DC2626':'#6B7280',fontWeight:700}}>{totBN}건</strong></span>
-      <span style={{fontSize:11,color:'#6B7280'}}>총 입장객 <strong style={{color:'#111827',fontWeight:700}}>{totV}명</strong></span>
-    </div>
 
-    {/* ② 구역별 분석 차트 */}
-    {rzones.length>0&&(
-      <div className="rpt-section">
-        <div className="rpt-section-title" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-          <span>구역별 분석 차트</span>
-          <span style={{fontSize:10,fontWeight:500,color:'#9CA3AF',marginBottom:0}}>진입수 · 체험 전환율</span>
-        </div>
-        <div className="chart-wrap"><canvas ref={chartRef}/></div>
+    {/* ── Brief narrative summary ── */}
+    {(_totalZones > 0 || srs.length > 0) && (
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 6,
+        background: '#F8FAFC', border: '1px solid #E2E8F0',
+        borderRadius: 8, padding: '8px 14px', marginBottom: 16,
+        flexWrap: 'wrap',
+      }}>
+        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
+          <strong style={{ color: '#0F172A', fontWeight: 700 }}>{_visitedZones}개 구역</strong> 방문
+        </span>
+        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
+          <strong style={{ color: '#0F172A', fontWeight: 700 }}>{totV}명</strong> 체험
+        </span>
+        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: '#475569', fontWeight: 500 }}>
+          <strong style={{ color: _urgentCount > 0 ? '#DC2626' : '#059669', fontWeight: 700 }}>
+            {_urgentCount}건
+          </strong> 개선 필요
+        </span>
+        <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
+        <span style={{ fontSize: 11, color: '#475569' }}>
+          평균 스킵율 <strong style={{ color: avgSR>30?'#DC2626':avgSR>10?'#D97706':'#059669', fontWeight:700 }}>{avgSR}%</strong>
+        </span>
+        {avgEng !== '-' && <>
+          <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
+          <span style={{ fontSize: 11, color: '#475569' }}>
+            몰입 강도 <strong style={{ color: '#7C3AED', fontWeight: 700 }}>★{avgEng}</strong>
+          </span>
+        </>}
+        {totBN > 0 && <>
+          <span style={{ color: '#CBD5E1', fontSize: 11 }}>·</span>
+          <span style={{ fontSize: 11, color: '#475569' }}>
+            병목 <strong style={{ color: '#DC2626', fontWeight: 700 }}>{totBN}건</strong>
+          </span>
+        </>}
       </div>
     )}
 
-    {/* ③ 시간대별 결과 */}
-    {srs.length>0&&(
-      <div className="rpt-section">
-        <div className="rpt-section-title">시간대별 결과</div>
-        <div style={{overflowX:'auto'}}>
-          <table className="rpt-table">
-            <thead><tr><th>시간대</th><th>입장객</th><th>스킵율</th><th>평균 체류</th><th>몰입 강도</th><th>병목</th></tr></thead>
-            <tbody>
-              {srs.map(r=>(
-                <tr key={r.slot}>
-                  <td style={{fontWeight:500}}>{r.label}</td>
-                  <td>{r.visitors}명</td>
-                  <td>
-                    <div style={{display:'flex',alignItems:'center',gap:5}}>
-                      <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:40}}>
-                        <div style={{height:'100%',width:`${Math.min(100,r.skipRate)}%`,background:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',borderRadius:2}}/>
-                      </div>
-                      <span style={{color:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
-                    </div>
-                  </td>
-                  <td>{r.avgDwell}초</td>
-                  <td style={{color:'#7C3AED'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
-                  <td style={{color:r.bottlenecks>0?'#DC2626':'#9CA3AF'}}>{r.bottlenecks}건</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {/* ④ 구역별 분석 */}
-    {rzones.length>0&&(
-      <div className="rpt-section">
-        <div className="rpt-section-title">구역별 분석</div>
-        <div style={{overflowX:'auto'}}>
-          <table className="rpt-table">
-            <thead><tr>
-              <th style={{textAlign:'left'}}>구역</th>
-              <th>진입</th><th>전환율</th><th>평균 대기</th>
-              <th>스킵율</th><th>몰입 강도</th><th>등급</th>
-            </tr></thead>
-            <tbody>
-              {[...rzones].sort((a,b)=>(b.entries||0)-(a.entries||0)).map(z=>{
-                const convRate = z.convRate??0
-                const avgWait = z.avgWait??0
-                const g = gradeOf(z.skipRate)
-                // grade by conversion rate
-                const convGrade = convRate>60?{g:'A',c:'#059669',bg:'#ECFDF5'}:convRate>30?{g:'B',c:'#2563EB',bg:'#EFF6FF'}:convRate>0?{g:'C',c:'#D97706',bg:'#FFFBEB'}:{g:'-',c:'#888',bg:'#f5f5f5'}
-                return (
-                  <tr key={z.id}>
-                    <td style={{fontWeight:600,textAlign:'left'}}>{zLabel(z)}</td>
-                    <td style={{fontSize:11}}>{z.entries??'-'}명</td>
-                    <td>
-                      {z.entries>0?(
-                        <div style={{display:'flex',alignItems:'center',gap:4}}>
-                          <div style={{flex:1,height:5,background:'#f0f0f0',borderRadius:3,overflow:'hidden',minWidth:36}}>
-                            <div style={{height:'100%',width:`${Math.min(100,convRate)}%`,background:convRate>60?'#059669':convRate>30?'#2563EB':'#D97706',borderRadius:3}}/>
-                          </div>
-                          <span style={{fontWeight:700,fontSize:11,color:convRate>60?'#059669':convRate>30?'#2563EB':'#D97706'}}>{convRate}%</span>
-                        </div>
-                      ):<span style={{color:'#ccc',fontSize:11}}>-</span>}
-                    </td>
-                    <td style={{fontSize:11,color:avgWait>20?'#DC2626':avgWait>10?'#D97706':'#888',fontWeight:avgWait>10?600:400}}>
-                      {z.entries>0?avgWait+'초':'-'}
-                    </td>
-                    <td>
-                      <span style={{fontSize:11,color:z.skipRate>50?'#DC2626':z.skipRate>20?'#D97706':'#059669',fontWeight:600}}>{z.skipRate}%</span>
-                    </td>
-                    <td style={{color:'#7C3AED',fontSize:11}}>{z.engIdx!==null?starsOf(z.engIdx)+` (${z.engIdx})`:'-'}</td>
-                    <td><span style={{display:'inline-block',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:700,background:convGrade.bg,color:convGrade.c}}>{convGrade.g}</span></td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {/* ⑤ 미디어별 분석 */}
-    {allMedia.length>0&&(
-      <div className="rpt-section">
-        <div className="rpt-section-title">미디어별 분석 <span style={{fontSize:10,fontWeight:400,color:'#9CA3AF'}}>— 스킵율 높은 순</span></div>
-        <div style={{overflowX:'auto'}}>
-          <table className="rpt-table">
-            <thead><tr>
-              <th style={{textAlign:'left'}}>미디어</th>
-              <th style={{textAlign:'left'}}>구역</th>
-              <th>노출</th><th>스킵율</th><th>몰입 강도</th><th>등급</th>
-            </tr></thead>
-            <tbody>
-              {allMedia.map(m=>{
-                const g=gradeOf(m.skipRate)
-                return (
-                  <tr key={m.uid}>
-                    <td style={{textAlign:'left'}}>
-                      <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
-                        <span style={{width:10,height:10,borderRadius:3,background:m.bg||'#eee',border:`1.5px solid ${m.color||'#ccc'}`,flexShrink:0}}/>
-                        <span style={{fontWeight:500,fontSize:12}}>{m.name}</span>
-                      </span>
-                    </td>
-                    <td style={{textAlign:'left',fontSize:11,color:'#9CA3AF'}}>{m.zoneName}</td>
-                    <td style={{fontSize:11}}>{m.exposure>0?`${m.exposure}회`:'-'}</td>
-                    <td>
-                      {m.exposure>0?(
-                        <div style={{display:'flex',alignItems:'center',gap:5}}>
-                          <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:36}}>
-                            <div style={{height:'100%',width:`${Math.min(100,m.skipRate)}%`,background:m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669',borderRadius:2}}/>
-                          </div>
-                          <span style={{fontWeight:700,fontSize:11,color:m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669'}}>{m.skipRate}%</span>
-                        </div>
-                      ):<span style={{color:'#ccc',fontSize:11}}>-</span>}
-                    </td>
-                    <td style={{fontSize:11,color:'#7C3AED',fontWeight:600}}>
-                      {m.engIdx!=null?`★${m.engIdx}`:<span style={{color:'#ccc'}}>-</span>}
-                    </td>
-                    <td>
-                      {m.exposure>0?<span style={{display:'inline-block',padding:'2px 7px',borderRadius:4,fontSize:11,fontWeight:700,background:g.bg,color:g.c}}>{g.g}</span>:<span style={{color:'#ccc',fontSize:11}}>-</span>}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {/* ⑥ 개선 액션 플랜 */}
-    <div className="rpt-section">
-      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:12}}>
-        <span className="rpt-section-title" style={{marginBottom:0}}>개선 액션 플랜</span>
-        <span style={{fontSize:10,color:'#9CA3AF'}}>시뮬레이션 결과 기반 자동 생성</span>
-      </div>
+    {/* ── ① 개선 액션 플랜 (TOP — most prominent) ── */}
+    <div className="rpt-section" style={{ marginBottom: 20 }}>
+      <SectionTitle sub="시뮬레이션 결과 기반 자동 생성">개선 액션 플랜</SectionTitle>
       {(()=>{
         const actions=[]
         const totEnt2=_totEnt
@@ -442,21 +399,18 @@ function ReportView({ data, visible=true, setTab }) {
         const avgEntries=totEnt2/Math.max(rzones.length,1)
 
         // ─ 긴급 이슈 ─
-        // 심각한 병목 구역 (대기 > 20초)
         rzones.filter(z=>(z.avgWait||0)>20).sort((a,b)=>(b.avgWait||0)-(a.avgWait||0)).forEach(z=>{
           actions.push({priority:'urgent',category:'capacity',key:`uw${z.id}`,
             title:`${zLabel(z)} — 심각한 혼잡 (대기 ${z.avgWait}초)`,
             detail:`수용 인원(${z.media?.map(m=>m.name).join(', ')})을 늘리거나 미디어 추가 배치를 검토하세요.`,
           })
         })
-        // 스킵율 > 50% 미디어
         allMedia.filter(m=>m.skipRate>50&&m.exposure>0).forEach(m=>{
           actions.push({priority:'urgent',category:'content',key:`um${m.uid}`,
             title:`${m.name} — 스킵율 ${m.skipRate}% 위험`,
             detail:`콘텐츠 길이·내용을 재검토하거나 ${m.zoneName}의 진입 유도를 강화하세요.`,
           })
         })
-        // 전환율 < 20%
         if (totEnt2>0&&overallConv<20)
           actions.push({priority:'urgent',category:'flow',key:'uconv',
             title:`전체 체험 전환율 ${overallConv}% — 매우 낮음`,
@@ -464,34 +418,29 @@ function ReportView({ data, visible=true, setTab }) {
           })
 
         // ─ 권장 개선 ─
-        // 도달률 낮음
         if (rzones.length>0&&flowEffVal<70)
           actions.push({priority:'recommend',category:'flow',key:'rflow',
             title:`도달률 ${flowEffVal}% — 미방문 구역 발생`,
             detail:`${rzones.filter(z=>!(z.entries>0)).map(z=>zLabel(z)).join(', ')||'일부 구역'}이 방문되지 않고 있습니다. 동선 유도 또는 입구 위치를 조정하세요.`,
           })
-        // 대기 > 10초 구역
         rzones.filter(z=>(z.avgWait||0)>10&&(z.avgWait||0)<=20).forEach(z=>{
           actions.push({priority:'recommend',category:'capacity',key:`rw${z.id}`,
             title:`${zLabel(z)} — 대기 ${z.avgWait}초 주의`,
             detail:'혼잡 시간대 인력 배치 또는 미디어 수용 인원 소폭 확대를 고려하세요.',
           })
         })
-        // 전환율 낮은 구역
         rzones.filter(z=>(z.entries||0)>0&&(z.convRate||0)<30).forEach(z=>{
           actions.push({priority:'recommend',category:'content',key:`rc${z.id}`,
             title:`${zLabel(z)} — 체험 전환율 ${z.convRate||0}%`,
             detail:'초입 미디어 콘텐츠 매력도를 높이거나 관람객 유인 요소를 추가하세요.',
           })
         })
-        // 저활용 구역
         rzones.filter(z=>(z.entries||0)>0&&z.entries<avgEntries*0.35).forEach(z=>{
           actions.push({priority:'recommend',category:'zone',key:`ru${z.id}`,
             title:`${zLabel(z)} — 저활용 구역 (진입 ${z.entries}명)`,
             detail:'구역 위치 이동 또는 연결 동선 강화, 안내 미디어 추가를 검토하세요.',
           })
         })
-        // 스킵율 > 30% 미디어 (긴급 제외)
         allMedia.filter(m=>m.skipRate>30&&m.skipRate<=50&&m.exposure>0).forEach(m=>{
           actions.push({priority:'recommend',category:'content',key:`rm${m.uid}`,
             title:`${m.name} — 스킵율 ${m.skipRate}% 주의`,
@@ -522,32 +471,272 @@ function ReportView({ data, visible=true, setTab }) {
 
         const urgentCount = actions.filter(a=>a.priority==='urgent').length
         const recCount = actions.filter(a=>a.priority==='recommend').length
+        const maintainCount = actions.filter(a=>a.priority==='maintain').length
 
         return (<>
-          {urgentCount>0&&<div style={{fontSize:11,fontWeight:600,color:'#DC2626',marginBottom:6,display:'flex',alignItems:'center',gap:5}}>
-            🔴 긴급 {urgentCount}건 — 즉시 개선 필요
-          </div>}
+          {urgentCount>0&&(
+            <PriorityBanner dot="🔴" label="긴급" count={urgentCount} color="#DC2626" bg="#FEF2F2" borderColor="#FECACA"/>
+          )}
           {actions.filter(a=>a.priority==='urgent').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={setTab}/>
           ))}
-          {recCount>0&&<div style={{fontSize:11,fontWeight:600,color:'#D97706',marginTop:urgentCount>0?12:0,marginBottom:6,display:'flex',alignItems:'center',gap:5}}>
-            🟡 권장 개선 {recCount}건
-          </div>}
+          {recCount>0&&(
+            <PriorityBanner dot="🟡" label="권장" count={recCount} color="#D97706" bg="#FFFBEB" borderColor="#FDE68A"/>
+          )}
           {actions.filter(a=>a.priority==='recommend').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={setTab}/>
           ))}
-          {actions.filter(a=>a.priority==='maintain').length>0&&<div style={{fontSize:11,fontWeight:600,color:'#059669',marginTop:12,marginBottom:6,display:'flex',alignItems:'center',gap:5}}>
-            🟢 잘 되고 있는 것들
-          </div>}
+          {maintainCount>0&&(
+            <PriorityBanner dot="🟢" label="유지" count={maintainCount} color="#059669" bg="#ECFDF5" borderColor="#A7F3D0"/>
+          )}
           {actions.filter(a=>a.priority==='maintain').map(a=>(
             <ActionCard key={a.key} priority={a.priority} category={a.category} title={a.title} detail={a.detail} setTab={null}/>
           ))}
         </>)
       })()}
     </div>
+
+    {/* ── ② 메인 KPI 4개 ── */}
+    {(()=>{
+      const visitedZones = _visitedZones
+      const totalZones = _totalZones
+      const flowEffNum = _flowEffNum
+      const totEnt = _totEnt
+      const totEnged = _totEnged
+      const engRateNum = _engRateNum
+      const avgDw = srs.length ? Math.round(srs.reduce((s,r)=>s+(r.avgDwell||0),0)/srs.length) : 0
+      const avgWait = _avgWait
+      const hasFlow = totalZones > 0 || data?.flowEff != null
+      const hasEng = totEnt > 0 || data?.engRate != null
+      return (
+        <div className="rpt-kpi-row" style={{ marginBottom: 8 }}>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #1D9E75', minHeight: 88 }}>
+            <span className="rpt-kpi-l">도달률</span>
+            <span className={`rpt-kpi-v${hasFlow&&flowEffNum>=70?' ok':hasFlow&&flowEffNum<40?' warn':''}`}
+              style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
+              {hasFlow?flowEffNum:'-'}<small style={{ fontSize: 13 }}>{hasFlow?'%':''}</small>
+            </span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{visitedZones}/{totalZones} 구역 방문</span>
+          </div>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #6366f1', minHeight: 88 }}>
+            <span className="rpt-kpi-l">체험 전환율</span>
+            <span className={`rpt-kpi-v${hasEng&&engRateNum>=60?' ok':hasEng&&engRateNum<30?' warn':''}`}
+              style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
+              {hasEng?engRateNum:'-'}<small style={{ fontSize: 13 }}>{hasEng?'%':''}</small>
+            </span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{totEnged}/{totEnt} 체험</span>
+          </div>
+          <div className="rpt-kpi" style={{ borderTop: '3px solid #F59E0B', minHeight: 88 }}>
+            <span className="rpt-kpi-l">평균 체류시간</span>
+            <span className="rpt-kpi-v" style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
+              {avgDw>0?avgDw:'-'}<small style={{ fontSize: 13 }}>{avgDw>0?'초':''}</small>
+            </span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>슬롯 평균</span>
+          </div>
+          <div className="rpt-kpi" style={{ borderTop: `3px solid ${avgWait>20?'#DC2626':avgWait>10?'#D97706':'#E4E6EA'}`, minHeight: 88 }}>
+            <span className="rpt-kpi-l">평균 혼잡도</span>
+            <span className={`rpt-kpi-v${avgWait>20?' warn':''}`} style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.1 }}>
+              {avgWait}<small style={{ fontSize: 13 }}>초</small>
+            </span>
+            <span className="rpt-kpi-sub" style={{ fontSize: 10, color: '#9CA3AF' }}>{totV}명 입장</span>
+          </div>
+        </div>
+      )
+    })()}
+
+    {/* 보조 지표 row */}
+    <div style={{display:'flex',gap:20,marginBottom:20,padding:'8px 12px',background:'#F8FAFC',borderRadius:8,flexWrap:'wrap',border:'1px solid #E2E8F0'}}>
+      <span style={{fontSize:11,color:'#64748B'}}>평균 스킵율 <strong style={{color:avgSR>30?'#DC2626':avgSR>10?'#D97706':'#059669',fontWeight:700}}>{avgSR}%</strong></span>
+      <span style={{fontSize:11,color:'#64748B'}}>평균 몰입 강도 <strong style={{color:'#7C3AED',fontWeight:700}}>{avgEng!=='-'?`★${avgEng}`:'-'}</strong></span>
+      <span style={{fontSize:11,color:'#64748B'}}>병목 발생 <strong style={{color:totBN>0?'#DC2626':'#6B7280',fontWeight:700}}>{totBN}건</strong></span>
+      <span style={{fontSize:11,color:'#64748B'}}>총 입장객 <strong style={{color:'#111827',fontWeight:700}}>{totV}명</strong></span>
+    </div>
+
+    {/* ── ③ 구역별 분석 차트 ── */}
+    {rzones.length>0&&(
+      <div className="rpt-section">
+        <SectionTitle sub="진입수 · 체험 전환율">구역별 분석 차트</SectionTitle>
+        <div className="chart-wrap"><canvas ref={chartRef}/></div>
+      </div>
+    )}
+
+    {/* ── ④ 시간대별 결과 ── */}
+    {srs.length>0&&(
+      <div className="rpt-section">
+        <SectionTitle>시간대별 결과</SectionTitle>
+        <div style={{overflowX:'auto'}}>
+          <table className="rpt-table">
+            <thead><tr><th>시간대</th><th>입장객</th><th>스킵율</th><th>평균 체류</th><th>몰입 강도</th><th>병목</th></tr></thead>
+            <tbody>
+              {srs.map(r=>(
+                <tr key={r.slot}>
+                  <td style={{fontWeight:500}}>{r.label}</td>
+                  <td>{r.visitors}명</td>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:5}}>
+                      <div style={{flex:1,height:4,background:'#f0f0f0',borderRadius:2,overflow:'hidden',minWidth:40}}>
+                        <div style={{height:'100%',width:`${Math.min(100,r.skipRate)}%`,background:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',borderRadius:2}}/>
+                      </div>
+                      <span style={{color:r.skipRate>30?'#DC2626':r.skipRate>10?'#D97706':'#059669',fontWeight:600,fontSize:11}}>{r.skipRate}%</span>
+                    </div>
+                  </td>
+                  <td>{r.avgDwell}초</td>
+                  <td style={{color:'#7C3AED'}}>{r.engIdx!=='-'?`★${r.engIdx}`:'-'}</td>
+                  <td style={{color:r.bottlenecks>0?'#DC2626':'#9CA3AF'}}>{r.bottlenecks}건</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {/* ── ⑤ 구역별 분석 (bar cards, no table) ── */}
+    {rzones.length>0&&(
+      <div className="rpt-section">
+        <SectionTitle>구역 성과 분석</SectionTitle>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {[...rzones].sort((a,b)=>(b.entries||0)-(a.entries||0)).map(z=>{
+            const convRate = z.convRate??0
+            const avgWait = z.avgWait??0
+            const convGrade = convRate>60?{g:'A',c:'#059669',bg:'#ECFDF5'}:convRate>30?{g:'B',c:'#2563EB',bg:'#EFF6FF'}:convRate>0?{g:'C',c:'#D97706',bg:'#FFFBEB'}:{g:'-',c:'#888',bg:'#f5f5f5'}
+            const waitColor = avgWait>20?'#DC2626':avgWait>10?'#D97706':'#059669'
+            const skipColor = z.skipRate>50?'#DC2626':z.skipRate>20?'#D97706':'#059669'
+            return (
+              <div key={z.id} style={{
+                background: '#fff', border: '1px solid #E4E6EA',
+                borderRadius: 10, padding: '12px 16px',
+                display: 'flex', alignItems: 'center', gap: 14,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              }}>
+                {/* Zone name + grade */}
+                <div style={{ minWidth: 0, flex: '0 0 120px' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#111827', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{zLabel(z)}</div>
+                  <span style={{
+                    display: 'inline-block', padding: '2px 8px', borderRadius: 4,
+                    fontSize: 11, fontWeight: 700, background: convGrade.bg, color: convGrade.c,
+                  }}>{convGrade.g}</span>
+                </div>
+
+                {/* Conversion bar */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 4 }}>체험 전환율</div>
+                  {z.entries>0 ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ flex: 1, height: 6, background: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                        <div style={{
+                          height: '100%', width: `${Math.min(100, convRate)}%`,
+                          background: convGrade.c, borderRadius: 3,
+                        }}/>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: convGrade.c, minWidth: 32, textAlign: 'right' }}>{convRate}%</span>
+                    </div>
+                  ) : <span style={{ fontSize: 10, color: '#CBD5E1' }}>데이터 없음</span>}
+                </div>
+
+                {/* Wait time pill */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 52 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>대기</div>
+                  <span style={{
+                    display: 'inline-block', padding: '2px 8px', borderRadius: 12,
+                    fontSize: 11, fontWeight: 700, color: waitColor,
+                    background: `${waitColor}15`, border: `1px solid ${waitColor}30`,
+                  }}>{z.entries>0 ? avgWait+'초' : '-'}</span>
+                </div>
+
+                {/* Skip rate */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>스킵</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: skipColor }}>{z.skipRate}%</span>
+                </div>
+
+                {/* Engagement */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 56 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>몰입 강도</div>
+                  <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 600 }}>
+                    {z.engIdx!==null ? starsOf(z.engIdx)+` (${z.engIdx})` : '-'}
+                  </span>
+                </div>
+
+                {/* Entries */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 40 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>진입</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>{z.entries??'-'}명</span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )}
+
+    {/* ── ⑥ 미디어별 분석 (compact + tiny bars) ── */}
+    {allMedia.length>0&&(
+      <div className="rpt-section">
+        <SectionTitle sub="스킵율 높은 순">미디어 효과 분석</SectionTitle>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {allMedia.map(m=>{
+            const g=gradeOf(m.skipRate)
+            return (
+              <div key={m.uid} style={{
+                background: '#fff', border: '1px solid #E4E6EA',
+                borderRadius: 8, padding: '9px 14px',
+                display: 'flex', alignItems: 'center', gap: 12,
+                boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+              }}>
+                {/* Media name + zone */}
+                <div style={{ flex: '0 0 130px', minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: 3, background: m.bg||'#eee', border: `1.5px solid ${m.color||'#ccc'}`, flexShrink: 0 }}/>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.name}</span>
+                  </div>
+                  <span style={{ fontSize: 10, color: '#9CA3AF', paddingLeft: 15 }}>{m.zoneName}</span>
+                </div>
+
+                {/* Skip bar */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>스킵율</div>
+                  {m.exposure>0 ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <div style={{ flex: 1, height: 5, background: '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${Math.min(100,m.skipRate)}%`, background: m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669', borderRadius: 3 }}/>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: m.skipRate>50?'#DC2626':m.skipRate>20?'#D97706':'#059669', minWidth: 32, textAlign: 'right' }}>{m.skipRate}%</span>
+                    </div>
+                  ) : <span style={{ fontSize: 10, color: '#CBD5E1' }}>-</span>}
+                </div>
+
+                {/* Exposure */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>노출</div>
+                  <span style={{ fontSize: 11, color: '#374151' }}>{m.exposure>0?`${m.exposure}회`:'-'}</span>
+                </div>
+
+                {/* Engagement */}
+                <div style={{ flexShrink: 0, textAlign: 'center', minWidth: 44 }}>
+                  <div style={{ fontSize: 9, color: '#9CA3AF', fontWeight: 600, marginBottom: 3 }}>몰입</div>
+                  <span style={{ fontSize: 11, color: '#7C3AED', fontWeight: 600 }}>
+                    {m.engIdx!=null?`★${m.engIdx}`:<span style={{color:'#CBD5E1'}}>-</span>}
+                  </span>
+                </div>
+
+                {/* Grade badge */}
+                <div style={{ flexShrink: 0 }}>
+                  {m.exposure>0
+                    ? <span style={{ display:'inline-block', padding:'2px 8px', borderRadius:4, fontSize:11, fontWeight:700, background:g.bg, color:g.c }}>{g.g}</span>
+                    : <span style={{ fontSize:11, color:'#CBD5E1' }}>-</span>
+                  }
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )}
   </>)
 }
 
+// ── SimLogCard ──
 function SimLogCard({ log, onDelete }) {
   const [open, setOpen] = useState(false)
   const [zoneOpen, setZoneOpen] = useState(false)
@@ -674,6 +863,126 @@ function SimLogCard({ log, onDelete }) {
   </>)
 }
 
+// ── Empty state ──
+function EmptyState({ setTab }) {
+  const tiles = [
+    {
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      ),
+      title: '전시 건강도 점수',
+      desc: '도달률·전환율·혼잡도·참여도를 종합한 0-100 점수와 A–D 등급',
+      color: '#1D9E75',
+      bg: '#ECFDF5',
+    },
+    {
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+      ),
+      title: '개선 액션 플랜',
+      desc: '긴급·권장·유지 3단계로 정렬된 구체적 개선 과제 자동 생성',
+      color: '#DC2626',
+      bg: '#FEF2F2',
+    },
+    {
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+        </svg>
+      ),
+      title: '구역 성과 분석',
+      desc: '구역별 전환율 바, 대기 시간, 스킵율, 몰입 강도 시각화',
+      color: '#2563EB',
+      bg: '#EFF6FF',
+    },
+    {
+      icon: (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      ),
+      title: '미디어 효과 분석',
+      desc: '미디어별 스킵율, 노출 횟수, 몰입 강도를 등급과 함께 비교',
+      color: '#7C3AED',
+      bg: '#F5F3FF',
+    },
+  ]
+
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      padding: '48px 24px 40px', textAlign: 'center',
+    }}>
+      {/* Icon graphic */}
+      <div style={{
+        width: 72, height: 72, borderRadius: '50%',
+        background: 'linear-gradient(135deg, #E6F7F1 0%, #EFF6FF 100%)',
+        border: '2px solid #1D9E7530',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: 20,
+        boxShadow: '0 4px 24px rgba(29,158,117,0.12)',
+      }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4l-5 5-4-4-3 3"/>
+        </svg>
+      </div>
+
+      <div style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', marginBottom: 8, letterSpacing: '-0.03em' }}>
+        Insights will appear here
+      </div>
+      <div style={{ fontSize: 13, color: '#64748B', marginBottom: 32, maxWidth: 340, lineHeight: 1.6 }}>
+        시뮬레이션을 실행하면 전시관 운영 데이터를 분석해<br/>아래 4가지 인사이트를 자동으로 생성합니다.
+      </div>
+
+      {/* 2x2 feature tiles */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '1fr 1fr',
+        gap: 12, width: '100%', maxWidth: 480, marginBottom: 32,
+      }}>
+        {tiles.map(t => (
+          <div key={t.title} style={{
+            background: '#fff', border: '1px solid #E2E8F0',
+            borderRadius: 12, padding: '16px',
+            textAlign: 'left', boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+          }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 10,
+              background: t.bg, color: t.color,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              marginBottom: 10,
+            }}>{t.icon}</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#0F172A', marginBottom: 4 }}>{t.title}</div>
+            <div style={{ fontSize: 10, color: '#64748B', lineHeight: 1.5 }}>{t.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      {setTab && (
+        <button onClick={() => setTab('simulate')} style={{
+          background: '#1D9E75', color: '#fff',
+          border: 'none', borderRadius: 10, padding: '12px 28px',
+          fontSize: 13, fontWeight: 700, cursor: 'pointer',
+          boxShadow: '0 4px 16px rgba(29,158,117,0.35)',
+          letterSpacing: '-0.01em',
+        }}>
+          시뮬레이션 실행하기 →
+        </button>
+      )}
+    </div>
+  )
+}
+
 export default function ResultPanel({ tab, saveReport }) {
   const { reportData, slotResults, simLogs, setSimLogs, setReportData, setTab } = useSimStore()
 
@@ -714,7 +1023,7 @@ export default function ResultPanel({ tab, saveReport }) {
       </div>
 
       {!reportData&&slotResults.length===0
-        ? <div className="rpt-warn caution"><span>●</span><span>시뮬레이션을 실행하면 분석 결과가 표시됩니다.</span></div>
+        ? <EmptyState setTab={setTab}/>
         : <ReportView data={reportData||{slotResults,zones:[],rangeLabel:''}} visible={tab==='report'} setTab={setTab}/>
       }
 
@@ -752,7 +1061,6 @@ export default function ResultPanel({ tab, saveReport }) {
                   const wait = log.avgWait ?? null
                   const isActive = reportData?._logId === log.id
 
-                  // 이전 Run 대비 델타 계산
                   const prevTotV = prev?.results?.reduce((s,r)=>s+(r.visitors||0),0) ?? null
                   const prevSR   = prev?.results?.length ? Math.round(prev.results.reduce((s,r)=>s+(r.skipRate||0),0)/prev.results.length) : null
                   const prevEff  = prev?.flowEff ?? null
@@ -771,7 +1079,6 @@ export default function ResultPanel({ tab, saveReport }) {
                     )
                   }
 
-                  // 전체 runs에서 최고값 찾기 (best value highlighting)
                   const allEff  = simLogs.map(l=>l.flowEff).filter(v=>v!=null)
                   const allEng  = simLogs.map(l=>l.engRate).filter(v=>v!=null)
                   const allWait = simLogs.map(l=>l.avgWait).filter(v=>v!=null)
