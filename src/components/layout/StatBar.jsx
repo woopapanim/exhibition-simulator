@@ -49,7 +49,7 @@ export default function StatBar({ tab }) {
 
   // ── Simulate / Insights 탭: 실시간 현황 ──
   return (
-    <div className="stat-bar" style={{display:(tab==='build'||tab==='report')?'none':undefined}}>
+    <div className="stat-bar" style={{display:(tab==='build'||tab==='report'||tab==='sim')?'none':undefined}}>
       {/* 공간 관점 */}
       <Sbc label="현재 관람객" value={d.curVisitors ?? '-'}/>
       <Sbc label="밀집도" value={d.density ?? '-'}

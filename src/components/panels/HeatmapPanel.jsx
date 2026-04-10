@@ -63,30 +63,27 @@ export default function HeatmapPanel({
           {/* Run 배너 */}
           {reportData && (
             <div style={{
-              margin:'0 0 10px',
-              background:'linear-gradient(145deg,#0c2318 0%,#163527 50%,#0c2318 100%)',
-              borderRadius:11, border:'1px solid rgba(29,158,117,0.25)',
-              padding:'10px 11px', position:'relative', overflow:'hidden',
+              marginBottom:10,
+              background:'#F9FAFB', borderRadius:10,
+              border:'1px solid var(--color-border)',
+              padding:'10px 12px',
             }}>
-              {/* 배경 장식 */}
-              <div style={{ position:'absolute', top:-12, right:-12, width:56, height:56, borderRadius:'50%', background:'rgba(29,158,117,0.08)' }}/>
-              <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.08em', color:'rgba(74,222,128,0.7)', marginBottom:5, textTransform:'uppercase' }}>
-                📊 분석 중
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+                <span style={{ fontSize:10, fontWeight:700, color:'#1D9E75', letterSpacing:'0.06em', textTransform:'uppercase' }}>
+                  분석 중
+                </span>
+                {reportData._runNo && (
+                  <span style={{ fontSize:10, fontWeight:700, color:'#9CA3AF' }}>
+                    RUN #{reportData._runNo}
+                  </span>
+                )}
               </div>
-              {reportData._runNo && (
-                <div style={{ fontSize:10, fontWeight:800, color:'#4ade80', marginBottom:2, letterSpacing:'0.04em' }}>
-                  RUN #{reportData._runNo}
-                </div>
-              )}
-              <div style={{ fontSize:12, fontWeight:700, color:'#fff', marginBottom:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
-                {reportData._project}
+              <div style={{ fontSize:12, fontWeight:600, color:'#111827', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginBottom:2 }}>
+                {reportData._scenario || reportData._project || '—'}
               </div>
-              <div style={{ fontSize:10, color:'rgba(255,255,255,0.5)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', marginBottom: reportData._ts ? 4 : 0 }}>
-                {reportData._scenario} · {reportData._rangeLabel}
+              <div style={{ fontSize:10, color:'#9CA3AF', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                {reportData._rangeLabel}{reportData._ts ? ` · ${reportData._ts}` : ''}
               </div>
-              {reportData._ts && (
-                <div style={{ fontSize:10, color:'rgba(255,255,255,0.25)' }}>{reportData._ts}</div>
-              )}
             </div>
           )}
 
@@ -96,8 +93,8 @@ export default function HeatmapPanel({
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
                 <span style={{ fontSize:11, fontWeight:600, color:'#6B7280', letterSpacing:'0.06em', textTransform:'uppercase' }}>전체 결과</span>
                 <button onClick={() => setTab('report')} style={{
-                  fontSize:10, color:'#7C3AED', background:'#f5f0ff', border:'1px solid #e0d4f7',
-                  borderRadius:7, cursor:'pointer', fontWeight:700, padding:'4px 10px', letterSpacing:'0.02em',
+                  fontSize:10, color:'#fff', background:'#7C3AED', border:'none',
+                  borderRadius:7, cursor:'pointer', fontWeight:600, padding:'4px 10px',
                 }}>Insights →</button>
               </div>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>

@@ -165,7 +165,7 @@ body {
 /* 헤더 버튼 */
 .hdr-btns { display: flex; align-items: center; gap: 12px; margin-left: auto; flex-shrink: 0; }
 .hdr-icon-btn {
-  width: 36px; height: 36px;
+  width: 28px; height: 28px;
   border-radius: 50%;
   border: 1px solid #E4E6EA;
   background: #fff;
@@ -630,22 +630,36 @@ body {
   background: rgba(29,158,117,0.04);
 }
 .bs-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
   margin-bottom: 4px;
 }
 .bs-stat {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  color: #6B7280;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #F9FAFB;
+  border: 1px solid #F0F0F0;
+  min-height: 68px;
+}
+.bs-stat > span,
+.bs-stat > label {
+  font-size: 9px;
+  font-weight: 600;
+  color: #9CA3AF;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .bs-stat strong {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 700;
   color: #111827;
+  text-align: right;
+  line-height: 1;
 }
 .bs-divider {
   height: 1px;
@@ -728,7 +742,7 @@ body {
 .bs-add-btn {
   flex: 1;
   padding: var(--row-py) var(--row-px);
-  border-radius: var(--r-pill);
+  border-radius: 8px;
   border: 1px solid #E4E6EA;
   background: #fff;
   color: #374151;
@@ -1034,12 +1048,12 @@ canvas {
 
 /* ── 미디어 추가 점선 버튼 ── */
 .btn-add-media {
-  padding: 7px 16px; border-radius: 20px;
-  border: 1.5px dashed #D1D5DB; background: none;
+  padding: 7px 16px; border-radius: 8px;
+  border: 1px solid #E4E6EA; background: #fff;
   color: #6B7280; font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all .2s ease;
+  cursor: pointer; transition: all .15s ease;
 }
-.btn-add-media:hover { background: rgba(29,158,117,0.05); border-color: #1D9E75; color: #16855f; }
+.btn-add-media:hover { background: #F0FAF6; border-color: #1D9E75; color: #1D9E75; }
 
 /* ── 동선 타입 세그먼트 버튼 ── */
 .flow-seg { display: flex; gap: 4px; align-items: center; }
@@ -1362,12 +1376,16 @@ input[type=range]::-moz-range-progress {
 .sim-slot-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   margin: calc(-1 * var(--panel-py)) calc(-1 * var(--panel-px)) 0;
   padding: var(--panel-py) var(--panel-px);
   border-bottom: 1px solid var(--color-border);
   background: var(--color-bg-section);
   border-radius: var(--r-lg) var(--r-lg) 0 0;
+}
+.sim-slot-header .sim-ctrl-select {
+  flex: 1;
+  min-width: 0;
 }
 .sim-slot-title {
   font-size: 13px;
@@ -1778,7 +1796,7 @@ input[type=range]::-moz-range-progress {
   .hdr-btns { gap: 8px; margin-left: auto; }
   .hdr-login-btn { font-size: 13px; }
   .hdr-signup-btn { font-size: 13px; padding: 8px 18px; }
-  .hdr-icon-btn { width: 34px; height: 34px; }
+  .hdr-icon-btn { width: 28px; height: 28px; }
   .hdr-nav { order: 10; width: 100%; max-width: 100%; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
   .hdr-nav::-webkit-scrollbar { display: none; }
   .hdr-tab { flex-shrink: 0; }

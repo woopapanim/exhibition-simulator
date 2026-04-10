@@ -111,6 +111,33 @@ export default function SetupPanel({
 
           <div className="bs-divider"/>
 
+          {/* 통계 */}
+          <div className="bs-label">Overview</div>
+          <div className="bs-stats">
+            <div className="bs-stat"><span>Zones</span><strong>{floorZones.length}</strong></div>
+            <div className="bs-stat"><span>Media</span><strong>{floorMediaCount}</strong></div>
+            <div className="bs-stat">
+              <PortalTip label="면적 수용">
+                전체 존 면적 기준 최대 수용 인원입니다.<br/>
+                국제 전시 밀도 기준 <strong style={{color:'#1D9E75'}}>2.5m²/인</strong>으로 산정합니다.<br/>
+                안전·쾌적 관람을 위한 권장 동시 입장 인원의 상한선입니다.
+              </PortalTip>
+              <strong>{floorAreaCap}명</strong>
+            </div>
+            {floorMediaCount > 0 && (
+              <div className="bs-stat">
+                <PortalTip label="미디어 수용">
+                  미디어 아이템의 동시 체험 가능 인원 합계입니다.<br/>
+                  각 미디어의 cap 값을 모두 더한 값으로,<br/>
+                  <span style={{color:'#1D9E75'}}>면적 수용보다 낮으면 병목이 발생할 수 있습니다.</span>
+                </PortalTip>
+                <strong>{floorCap}명</strong>
+              </div>
+            )}
+          </div>
+
+          <div className="bs-divider"/>
+
           {/* 면적 설정 */}
           {(()=>{
             const sz=floorSizes[viewFloor]||{w:20,h:14}
@@ -165,32 +192,6 @@ export default function SetupPanel({
 
           <div className="bs-divider"/>
 
-          {/* 통계 */}
-          <div className="bs-stats">
-            <div className="bs-stat"><span>Zones</span><strong>{floorZones.length}</strong></div>
-            <div className="bs-stat"><span>Media</span><strong>{floorMediaCount}</strong></div>
-            <div className="bs-stat">
-              <PortalTip label="면적 수용">
-                전체 존 면적 기준 최대 수용 인원입니다.<br/>
-                국제 전시 밀도 기준 <strong style={{color:'#1D9E75'}}>2.5m²/인</strong>으로 산정합니다.<br/>
-                안전·쾌적 관람을 위한 권장 동시 입장 인원의 상한선입니다.
-              </PortalTip>
-              <strong>{floorAreaCap}명</strong>
-            </div>
-            {floorMediaCount > 0 && (
-              <div className="bs-stat">
-                <PortalTip label="미디어 수용">
-                  미디어 아이템의 동시 체험 가능 인원 합계입니다.<br/>
-                  각 미디어의 cap 값을 모두 더한 값으로,<br/>
-                  <span style={{color:'#1D9E75'}}>면적 수용보다 낮으면 병목이 발생할 수 있습니다.</span>
-                </PortalTip>
-                <strong>{floorCap}명</strong>
-              </div>
-            )}
-          </div>
-
-          <div className="bs-divider"/>
-
           {/* 존 목록 */}
           <div className="bs-label">Zone List</div>
           <div className="bs-zone-list">
@@ -207,9 +208,9 @@ export default function SetupPanel({
 
           {/* 선택된 존 요약 */}
           {selZone && (
-            <div style={{margin:'4px 0 12px',padding:'10px 12px',background:'#F3F4F6',borderRadius:10,border:'1px solid #E4E6EA'}}>
-              <div style={{fontSize:11,fontWeight:600,color:'#6B7280',marginBottom:8,display:'flex',alignItems:'center',gap:4,textTransform:'uppercase',letterSpacing:'0.06em'}}>
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <div style={{margin:'4px 0 12px',padding:'10px 12px',background:'#ECFDF5',borderRadius:10,border:'1px solid #A7F3D0'}}>
+              <div style={{fontSize:11,fontWeight:600,color:'#059669',marginBottom:8,display:'flex',alignItems:'center',gap:4,textTransform:'uppercase',letterSpacing:'0.06em'}}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 {selZone.name}
               </div>
               <div style={{display:'flex',flexDirection:'column',gap:4}}>
@@ -220,8 +221,8 @@ export default function SetupPanel({
                   selZone.media.length > 0 && {label:'미디어 수용', value:selZoneMediaCap+'명'},
                 ].filter(Boolean).map(({label,value})=>(
                   <div key={label} style={{display:'flex',justifyContent:'space-between',alignItems:'center',
-                    background:'#fff',borderRadius:7,padding:'8px 10px',border:'1px solid #E4E6EA'}}>
-                    <span style={{fontSize:11,color:'#9CA3AF',fontWeight:500}}>{label}</span>
+                    background:'#fff',borderRadius:7,padding:'8px 10px',border:'1px solid #D1FAE5'}}>
+                    <span style={{fontSize:11,color:'#6B7280',fontWeight:500}}>{label}</span>
                     <span style={{fontSize:13,fontWeight:700,color:'#111827'}}>{value}</span>
                   </div>
                 ))}
@@ -291,7 +292,7 @@ export default function SetupPanel({
           {/* ── 팔레트 패널 (좌측 플로팅) ── */}
           {palOpen && (
             <div style={{
-              position:'absolute', left:244, top:16, width:272, zIndex:22,
+              position:'absolute', left:256, top:16, width:272, zIndex:22,
               height:'fit-content', maxHeight:'calc(100% - 32px)',
               display:'flex', flexDirection:'column',
               background:'rgba(255,255,255,0.95)',
@@ -301,7 +302,7 @@ export default function SetupPanel({
               overflow:'hidden',
             }}>
               <div className="dh" style={{justifyContent:'space-between',flexShrink:0}}>
-                <span style={{fontSize:13,fontWeight:600,color:'#111827'}}>미디어 추가</span>
+                <span style={{fontSize:13,fontWeight:600,color:'#111827'}}>Add Media</span>
                 <button className="rb" onClick={()=>setPalOpen(false)} title="닫기">✕</button>
               </div>
               <div style={{flex:1,overflowY:'auto',padding:'8px 0'}}>
@@ -482,7 +483,7 @@ export default function SetupPanel({
               </div>
               {/* 미디어 다각형 그리기 안내 */}
               {mediaPolyDrawing && (
-                <div style={{padding:'7px 12px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
+                <div style={{padding:'7px 16px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
                   <span style={{fontSize:10,color:'#534AB7',flex:1,lineHeight:1.5}}>
                     캔버스에 형태 그리기 · 꼭짓점 클릭으로 추가<br/>첫 점 재클릭으로 완성
                   </span>
@@ -492,7 +493,7 @@ export default function SetupPanel({
               )}
               {/* 다각형 수정 안내 */}
               {mediaPolyEditingUid && (
-                <div style={{padding:'7px 12px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
+                <div style={{padding:'7px 16px',background:'rgba(83,74,183,0.07)',borderBottom:'1px solid rgba(83,74,183,0.12)',display:'flex',alignItems:'center',gap:8}}>
                   <span style={{fontSize:10,color:'#534AB7',flex:1,lineHeight:1.5}}>
                     꼭짓점 드래그로 형태 수정
                   </span>
@@ -505,7 +506,7 @@ export default function SetupPanel({
                 {!selZone.media.length ? (
                   <div style={{padding:'20px 16px',textAlign:'center'}}>
                     <div style={{fontSize:12,color:'#aaa',marginBottom:12}}>배치된 미디어가 없어요</div>
-                    <button className="btn-add-media" onClick={()=>setPalOpen(true)}>＋ Add Media</button>
+                    <button className="bs-add-btn" onClick={()=>setPalOpen(true)}>+ Media</button>
                   </div>
                 ) : (
                   <>
@@ -576,7 +577,7 @@ export default function SetupPanel({
                               </div>
                             </div>
                             {/* 형태 만들기 */}
-                            <div style={{padding:'8px 12px',borderTop:'.5px solid rgba(0,0,0,0.06)'}}>
+                            <div style={{padding:'8px 16px',borderTop:'.5px solid rgba(0,0,0,0.06)'}}>
                               {m.polyVerts?.length>=3 ? (
                                 <div style={{display:'flex',alignItems:'center',gap:6,padding:'5px 8px',background:'rgba(83,74,183,0.05)',borderRadius:7,border:'1px solid rgba(83,74,183,0.15)'}}>
                                   {m.rectShape
@@ -615,7 +616,7 @@ export default function SetupPanel({
                                     <button key={label} disabled={mediaPolyDrawing} onClick={onClick} title={title}
                                       style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',gap:4,
                                         padding:'6px 0',borderRadius:7,cursor:'pointer',
-                                        border:'1.5px dashed rgba(83,74,183,0.35)',
+                                        border:'1.5px solid rgba(83,74,183,0.4)',
                                         background:'rgba(83,74,183,0.04)',
                                         color:mediaPolyDrawing?'#bbb':'#534AB7',
                                         fontSize:10,fontWeight:500,transition:'all .15s'}}>
@@ -648,10 +649,8 @@ export default function SetupPanel({
               </div>
               {/* Add Media 버튼 — 존 디테일 하단 */}
               {selZone.media.length > 0 && (
-                <div style={{padding:'10px 16px',borderTop:'1px solid #f0f4f0',flexShrink:0}}>
-                  <button className="btn-add-media" style={{width:'100%'}} onClick={()=>setPalOpen(true)}>
-                    ＋ Add Media
-                  </button>
+                <div style={{padding:'16px',borderTop:'1px solid #f0f4f0',flexShrink:0,display:'flex',justifyContent:'center'}}>
+                  <button className="bs-add-btn" onClick={()=>setPalOpen(true)}>+ Media</button>
                 </div>
               )}
             </div>

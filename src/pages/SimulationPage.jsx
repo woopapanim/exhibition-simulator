@@ -22,6 +22,44 @@ import SimPanel    from '../components/panels/SimPanel'
 import HeatmapPanel from '../components/panels/HeatmapPanel'
 import ResultPanel  from '../components/panels/ResultPanel'
 
+function ConfirmModal({ title, message, onConfirm, onCancel }) {
+  const confirmRef = useRef(null)
+  const cancelRef  = useRef(null)
+
+  // 열릴 때 확인 버튼에 포커스
+  useEffect(() => { confirmRef.current?.focus() }, [])
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.key === 'Escape') {
+        onCancel()
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        document.activeElement === cancelRef.current ? onCancel() : onConfirm()
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault()
+        if (document.activeElement === confirmRef.current) cancelRef.current?.focus()
+        else confirmRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [onConfirm, onCancel])
+
+  return (
+    <div className="modal-backdrop" onClick={onCancel}>
+      <div className="modal-box" onClick={e => e.stopPropagation()}>
+        <div className="modal-title">{title}</div>
+        <div className="modal-message">{message}</div>
+        <div className="modal-btns">
+          <button ref={cancelRef}  className="modal-btn-cancel"  onClick={onCancel}>취소</button>
+          <button ref={confirmRef} className="modal-btn-confirm" onClick={onConfirm}>삭제</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function SimulationPage() {
   // ── Get all state from store ──
   const {
@@ -2744,17 +2782,22 @@ export default function SimulationPage() {
     const tc2=allEng.reduce((s,ea)=>s+ea.count,0)
     const engIdx=tc2>0?(ts2/tc2).toFixed(1):'-'
 
-    // 전시 클록: 슬롯 시작 시각 + 실제 시뮬레이션 경과 시간 (배속 반영)
-    const _slotStartHour = 9 + runningSlotRef.current   // 9시=9, 10시=10 ...
-    const _simElapsedMs = simTimeRef.current * speedRef.current  // 배속 반영 경과 ms
-    const _simElapsedMin = Math.floor(_simElapsedMs / 60000)
+    // 전시 클록: spawnTimer는 spawn마다 차감되므로, 총 경과 sim 시간 = spawned×interval + 잔여
+    const _slotStartHour = 9 + runningSlotRef.current
+    const _spawnInterval = 60000 / (cfgRef.current.arrivalRate || 5)
+    const _simElapsedMs  = totalSpawnedRef.current * _spawnInterval + spawnTimer.current
+    const _simElapsedSec = Math.floor(_simElapsedMs / 1000)
+    const _simElapsedMin = Math.floor(_simElapsedSec / 60)
+    const _simElapsedSecRem = _simElapsedSec % 60
     const _exhibMinTotal = _slotStartHour * 60 + _simElapsedMin
     const _exhibHour = Math.floor(_exhibMinTotal / 60)
     const _exhibMin  = _exhibMinTotal % 60
-    const simTimeDisplay = `${String(_exhibHour).padStart(2,'0')}:${String(_exhibMin).padStart(2,'0')}`
+    const simTimeDisplay = `${String(_exhibHour).padStart(2,'0')}:${String(_exhibMin).padStart(2,'0')}:${String(_simElapsedSecRem).padStart(2,'0')}`
 
     const slotTotal = cfgRef.current.total
-    const slotProgress = slotTotal > 0 ? Math.min(100, Math.round(totalSpawnedRef.current / slotTotal * 100)) : 0
+    // spawn 완료 후에도 관람 중인 방문자가 있으므로 퇴장 기준으로 진행률 계산
+    const _denominator = Math.max(totalSpawnedRef.current, slotTotal)
+    const slotProgress = _denominator > 0 ? Math.min(100, Math.round(exitedCnt.current / _denominator * 100)) : 0
     const cumVisitors = cumulativeVisitorsRef.current + totalSpawnedRef.current
 
     const _totalArea = floorSizesRef.current.reduce((s,f)=>s+f.w*f.h, 0)
@@ -2774,7 +2817,7 @@ export default function SimulationPage() {
       density, densityNum,
       simTimeDisplay,
       slotProgress,
-      slotVisitors: totalSpawnedRef.current,
+      slotVisitors: active,
       slotTotal,
       cumVisitors,
     }))
@@ -2998,7 +3041,18 @@ export default function SimulationPage() {
     }
     setSimStatus(finished?'done':'idle')
     if (!finished) setSlotResults([])
-    setDispStats(p=>({...p,curVisitors:'0명',avgDwell:'-',bottlenecks:'0건',skipRate:'0%',skipRateNum:0,engIdx:'-'}))
+    setDispStats(p=>({
+      ...p,
+      curVisitors:'0명', curVisitorsNum:0,
+      density:'-', densityNum:0,
+      experiencingCount:0, waitingCount:0,
+      congestion:'-', congestionSec:0,
+      bottlenecks:'-', bottlenecksNum:0,
+      skipRate:'-', skipRateNum:0,
+      avgDwell:'-', engIdx:'-',
+      simTimeDisplay:'00:00:00',
+      slotProgress:0, slotVisitors:0,
+    }))
     setSkipTable([])
   }
 
@@ -3829,18 +3883,12 @@ export default function SimulationPage() {
 
       {/* ── 확인 모달 ── */}
       {confirmModal.visible&&(
-        <div className="modal-backdrop" onClick={()=>setConfirmModal(p=>({...p,visible:false}))}>
-          <div className="modal-box" onClick={e=>e.stopPropagation()}>
-            <div className="modal-title">{confirmModal.title}</div>
-            <div className="modal-message">{confirmModal.message}</div>
-            <div className="modal-btns">
-              <button className="modal-btn-cancel"
-                onClick={()=>setConfirmModal(p=>({...p,visible:false}))}>취소</button>
-              <button className="modal-btn-confirm"
-                onClick={()=>{confirmModal.onConfirm?.();setConfirmModal(p=>({...p,visible:false}))}}>삭제</button>
-            </div>
-          </div>
-        </div>
+        <ConfirmModal
+          title={confirmModal.title}
+          message={confirmModal.message}
+          onConfirm={()=>{confirmModal.onConfirm?.();setConfirmModal(p=>({...p,visible:false}))}}
+          onCancel={()=>setConfirmModal(p=>({...p,visible:false}))}
+        />
       )}
     </div>
   )

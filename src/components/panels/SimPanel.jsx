@@ -1,4 +1,42 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+// 클릭하면 입력 가능한 값 표시 컴포넌트
+function EditableVal({ value, unit, min, max, onChange }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const inputRef = useRef(null)
+
+  function startEdit() { setDraft(String(value)); setEditing(true) }
+  useEffect(() => { if (editing) inputRef.current?.select() }, [editing])
+
+  function commit() {
+    const n = parseInt(draft, 10)
+    if (!isNaN(n)) onChange(Math.min(max, Math.max(min, n)))
+    setEditing(false)
+  }
+
+  if (editing) return (
+    <span style={{display:'inline-flex',alignItems:'center',gap:2}}>
+      <input ref={inputRef} type="number" value={draft}
+        onChange={e=>setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={e=>{ if(e.key==='Enter') commit(); if(e.key==='Escape') setEditing(false) }}
+        style={{
+          width:46, padding:'1px 4px', fontSize:12, fontWeight:700,
+          border:'1.5px solid #1D9E75', borderRadius:5, outline:'none',
+          textAlign:'right', color:'#111827',
+        }}/>
+      <span style={{fontSize:11,color:'#6B7280'}}>{unit}</span>
+    </span>
+  )
+  return (
+    <span className="slot-row-val" onClick={startEdit}
+      style={{cursor:'text', borderBottom:'1px dashed #D1D5DB'}}
+      title="클릭하여 직접 입력">
+      {value}{unit}
+    </span>
+  )
+}
 import useSimStore from '../../store/simulationStore'
 import { SLOTS, SEGS, DOCENT_COLOR, VISITOR_TYPES, ALL_MT } from '../../constants'
 import { MediaIcon, SliderInput } from '../ui'
@@ -23,6 +61,19 @@ export default function SimPanel({
   const vtTotal = Object.values(slotCfg.visitorTypes||{}).reduce((s,v)=>s+v, 0)
 
   const [showLegend, setShowLegend] = useState(false)
+  const [activePanel, setActivePanel] = useState('slot') // 'slot' | 'stats' | 'history' | null
+  const togglePanel = (name) => setActivePanel(prev => prev === name ? null : name)
+  const showSlotPanel = activePanel === 'slot'
+  const showStats     = activePanel === 'stats'
+  const showHistory   = activePanel === 'history'
+  const sidebarRef = useRef(null)
+  const [sidebarH, setSidebarH] = useState(0)
+  useEffect(() => {
+    if (!sidebarRef.current) return
+    const ro = new ResizeObserver(() => setSidebarH(sidebarRef.current?.offsetHeight || 0))
+    ro.observe(sidebarRef.current)
+    return () => ro.disconnect()
+  }, [])
   useEffect(() => {
     if (!showLegend) return
     const handler = (e) => {
@@ -32,12 +83,16 @@ export default function SimPanel({
     return () => document.removeEventListener('mousedown', handler)
   }, [showLegend])
 
+  useEffect(() => {
+    if (simStatus === 'done') setActivePanel('history')
+  }, [simStatus])
+
   return (
     <div style={{display: tab==='sim' ? 'block' : 'none', position:'absolute', inset:0}}>
       <div className="sim-layout">
 
         {/* ── 좌측 사이드바 (시뮬레이션 컨트롤) ── */}
-        <div className="sim-sidebar">
+        <div className="sim-sidebar" ref={sidebarRef}>
 
           {/* Area 탭 — Build 탭과 동일 스타일 */}
           <div className="bs-area-row">
@@ -86,7 +141,7 @@ export default function SimPanel({
 
           {/* 실행 버튼 */}
           <div style={{padding:'10px 0',display:'flex',flexDirection:'column',gap:6}}>
-            <button className="sim-ctrl-btn primary" onClick={startSim}
+            <button className="sim-ctrl-btn primary" onClick={()=>{ startSim(); setActivePanel('stats') }}
               disabled={simStatus==='running'||simStatus==='paused'}>
               {simStatus==='running'?'실행 중…':'▶  시작'}
             </button>
@@ -108,92 +163,108 @@ export default function SimPanel({
 
             {/* 완료 상태 표시 */}
             {simStatus==='done' && (
-              <div style={{marginTop:6,padding:'5px 8px',borderRadius:7,background:'rgba(29,158,117,0.08)',border:'1px solid rgba(29,158,117,0.2)',fontSize:10,color:'#1D9E75',fontWeight:600,textAlign:'center'}}>
-                ✅ 완료 — 아래 Run History에서 확인하세요
+              <div style={{marginTop:6,padding:'6px 8px',borderRadius:7,background:'#ECFDF5',border:'1px solid #A7F3D0',fontSize:11,color:'#059669',fontWeight:600,textAlign:'center',letterSpacing:'0.02em'}}>
+                완료
+              </div>
+            )}
+
+            {/* ── 실행 중 진행 상태 ── */}
+            {(simStatus==='running'||simStatus==='paused') && (
+              <div style={{
+                marginTop:8, padding:'10px 12px', borderRadius:10,
+                background:'#F9FAFB', border:'1px solid var(--color-border)',
+              }}>
+                {/* 슬롯 + 시간 */}
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                  <span style={{fontSize:12,fontWeight:700,color:'#111827'}}>
+                    {SLOTS[runningSlot]}
+                    {simRange.start!==simRange.end && (
+                      <span style={{fontSize:10,fontWeight:400,color:'#9CA3AF',marginLeft:5}}>
+                        {runningSlot-simRange.start+1}/{simRange.end-simRange.start+1}
+                      </span>
+                    )}
+                  </span>
+                  <span style={{fontSize:11,fontWeight:600,color:'#6B7280',fontVariantNumeric:'tabular-nums'}}>
+                    {dispStats?.simTimeDisplay ?? '00:00'}
+                  </span>
+                </div>
+                {/* 방문객 + 진행률 바 */}
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
+                  <span style={{fontSize:11,color:'#374151',flexShrink:0}}>
+                    <span style={{fontWeight:700}}>{dispStats?.slotVisitors ?? 0}</span>
+                    <span style={{color:'#9CA3AF'}}>/{dispStats?.slotTotal ?? 0}명</span>
+                  </span>
+                  <div style={{flex:1,height:4,background:'#E5E7EB',borderRadius:2,overflow:'hidden'}}>
+                    <div style={{height:'100%',borderRadius:2,background:'#1D9E75',width:`${dispStats?.slotProgress ?? 0}%`,transition:'width 0.3s'}}/>
+                  </div>
+                  <span style={{fontSize:10,color:'#1D9E75',fontWeight:700,flexShrink:0}}>{dispStats?.slotProgress ?? 0}%</span>
+                </div>
+                {simStatus==='paused' && (
+                  <div style={{fontSize:10,color:'#D97706',fontWeight:600,textAlign:'center'}}>⏸ 일시정지</div>
+                )}
               </div>
             )}
           </div>
 
-          {/* ── Run History ── */}
-          {simLogs.length > 0 && (
-            <div style={{marginTop:10}}>
-              <div className="bs-divider"/>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 0 6px'}}>
-                <span style={{fontSize:11,fontWeight:600,color:'#6B7280',letterSpacing:'0.03em'}}>RUN HISTORY</span>
-                <span style={{fontSize:10,color:'#9CA3AF'}}>{simLogs.length}개</span>
-              </div>
-              <div style={{display:'flex',flexDirection:'column',gap:5,maxHeight:260,overflowY:'auto',paddingRight:2}}>
-                {simLogs.map((log, idx) => {
-                  const runNo = simLogs.length - idx
-                  const isActive = reportData && log.id === reportData._logId
-                  return (
-                    <div key={log.id} style={{
-                      background: isActive ? 'linear-gradient(145deg,#0c2318,#163527)' : '#fff',
-                      border: `1px solid ${isActive?'rgba(29,158,117,0.35)':'#e8ede8'}`,
-                      borderRadius:10, overflow:'hidden',
-                    }}>
-                      {/* 카드 헤더 */}
-                      <div style={{display:'flex',alignItems:'flex-start',gap:6,padding:'8px 10px 7px'}}>
-                        <span style={{fontSize:9,fontWeight:800,color:isActive?'#4ade80':'#1D9E75',flexShrink:0,marginTop:1}}>#{runNo}</span>
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:10.5,fontWeight:700,color:isActive?'#fff':'#1a2e27',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
-                            {log.scenario||log.project||'시나리오'}
-                          </div>
-                          <div style={{fontSize:9,color:isActive?'rgba(255,255,255,0.45)':'#aaa',marginTop:1.5}}>
-                            {log.rangeLabel} · {log.ts||'-'}
-                          </div>
-                        </div>
-                        <button onClick={()=>{
-                          setConfirmModal({
-                            visible: true,
-                            title: `Run #${runNo} 삭제`,
-                            message: '이 실행 기록을 삭제하면 Analyze·Insights 데이터도 함께 초기화됩니다.',
-                            onConfirm: () => {
-                              if (reportData?._logId === log.id) setReportData(null)
-                              setSimLogs(prev => {
-                                const next = prev.filter(l => l.id !== log.id)
-                                try { localStorage.setItem('exsim_logs', JSON.stringify(next)) } catch {}
-                                return next
-                              })
-                            },
-                          })
-                        }} style={{background:'none',border:'none',color:isActive?'rgba(255,255,255,0.25)':'#ccc',cursor:'pointer',fontSize:11,padding:0,flexShrink:0,lineHeight:1,marginTop:1}}>✕</button>
-                      </div>
-                      {/* 액션 버튼 */}
-                      <div style={{display:'flex',gap:6,padding:'0 8px 8px'}}>
-                        <button onClick={()=>onAnalyzeLog?.(log)}
-                          style={{flex:1,padding:'6px 0',border:'1px solid #A7E3CD',borderRadius:7,background:'#E6F7F1',fontSize:10,color:'#1D9E75',fontWeight:700,cursor:'pointer',letterSpacing:'0.02em'}}>
-                          Analyze
-                        </button>
-                        <button onClick={()=>{
-                          setReportData({
-                            zones:log.zones||[],
-                            range:log.range||{label:log.rangeLabel},
-                            slotResults:log.results||[],
-                            flowEff:log.flowEff,
-                            engRate:log.engRate,
-                            avgWait:log.avgWait,
-                            _logId:log.id,
-                          })
-                          setTab('report')
-                        }} style={{flex:1,padding:'6px 0',border:'1px solid #e0d4f7',borderRadius:7,background:'#f5f0ff',fontSize:10,color:'#7C3AED',fontWeight:700,cursor:'pointer',letterSpacing:'0.02em'}}>
-                          Insights
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
 
         </div>
 
         {/* ── 우측 메인 영역 ── */}
         <div className="sim-main">
 
+          {/* ── 우측 아이콘 스트립 ── */}
+          <div style={{
+            position:'absolute', right:16, top:16, zIndex:22,
+            display:'flex', flexDirection:'column', gap:6,
+          }}>
+            {/* 운영설정 아이콘 */}
+            <button onClick={() => togglePanel('slot')} title="운영 설정" style={{
+              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
+              background: showSlotPanel ? '#1D9E75' : '#fff',
+              color: showSlotPanel ? '#fff' : '#6B7280',
+              cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+              fontSize:16, transition:'all 0.15s',
+            }}>⚙</button>
+            {/* 실시간 통계 아이콘 */}
+            <button onClick={() => togglePanel('stats')} title="실시간 통계" style={{
+              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
+              background: showStats ? '#1D9E75' : '#fff',
+              color: showStats ? '#fff' : '#6B7280',
+              cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+              transition:'all 0.15s',
+            }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/>
+              </svg>
+            </button>
+            {/* 런 히스토리 아이콘 */}
+            <button onClick={() => togglePanel('history')} title="Run History" style={{
+              width:36, height:36, borderRadius:10, border:'1px solid var(--color-border)',
+              background: showHistory ? '#1D9E75' : '#fff',
+              color: showHistory ? '#fff' : simLogs.length > 0 ? '#6B7280' : '#D1D5DB',
+              cursor: simLogs.length > 0 ? 'pointer' : 'default',
+              display:'flex', alignItems:'center', justifyContent:'center',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+              fontSize:15, transition:'all 0.15s', position:'relative',
+            }}>
+              ☰
+              {simLogs.length > 0 && (
+                <span style={{
+                  position:'absolute', top:-4, right:-4,
+                  background: showHistory ? '#fff' : '#1D9E75',
+                  color: showHistory ? '#1D9E75' : '#fff',
+                  borderRadius:99, fontSize:8, fontWeight:700,
+                  minWidth:14, height:14, display:'flex', alignItems:'center', justifyContent:'center',
+                  padding:'0 3px', lineHeight:1,
+                }}>{simLogs.length}</span>
+              )}
+            </button>
+          </div>
+
           {/* 슬롯별 설정 */}
-          <div className="sim-slot-panel">
+          {showSlotPanel && <div className="sim-slot-panel" style={{right:60}}>
             {/* 헤더 */}
             <div className="sim-slot-header">
               <select className="sim-ctrl-select" style={{fontWeight:600,fontSize:12,color:'#0e1c18'}}
@@ -258,10 +329,11 @@ export default function SimPanel({
                       </span>
                     </span>
                   </span>
-                  <span className="slot-row-val">{slotCfg.arrivalRate??5}명/분</span>
+                  <EditableVal value={slotCfg.arrivalRate??5} unit="명/분" min={1} max={100}
+                    onChange={v=>setSlotCfgs(p=>p.map((c,i)=>i===slot?{...c,arrivalRate:v}:c))}/>
                 </div>
                 <div className="slot-row-slider">
-                  <SliderInput min="1" max="20" step="1" value={slotCfg.arrivalRate??5}
+                  <SliderInput min="1" max="20" step="1" value={Math.min(slotCfg.arrivalRate??5,20)}
                     onChange={e=>setSlotCfgs(p=>p.map((c,i)=>i===slot?{...c,arrivalRate:+e.target.value}:c))}/>
                 </div>
               </div>
@@ -298,10 +370,11 @@ export default function SimPanel({
               <div className="slot-row">
                 <div className="slot-row-top">
                   <span className="slot-row-label">예상 관람객</span>
-                  <span className="slot-row-val">{slotCfg.total}명</span>
+                  <EditableVal value={slotCfg.total} unit="명" min={0} max={2000}
+                    onChange={v=>setSlotCfgs(p=>p.map((c,i)=>i===slot?{...c,total:v}:c))}/>
                 </div>
                 <div className="slot-row-slider">
-                  <SliderInput min="0" max="200" step="10" value={slotCfg.total}
+                  <SliderInput min="0" max="200" step="10" value={Math.min(slotCfg.total,200)}
                     onChange={e=>setSlotCfgs(p=>p.map((c,i)=>i===slot?{...c,total:+e.target.value}:c))}/>
                 </div>
               </div>
@@ -380,54 +453,152 @@ export default function SimPanel({
               ))}
             </div>
           )}
-          </div>
+          </div>}
+
+          {/* ── Run History 플로팅 패널 ── */}
+          {showHistory && simLogs.length > 0 && (
+            <div style={{
+              position:'absolute', right:60, top:16, zIndex:21,
+              width:272,
+              maxHeight:'calc(100% - 80px)',
+              background:'#fff',
+              border:'1px solid var(--color-border)',
+              borderRadius:'var(--r-lg)',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+              display:'flex', flexDirection:'column',
+              overflow:'hidden',
+            }}>
+              {/* 헤더 */}
+              <div style={{
+                display:'flex', alignItems:'center', justifyContent:'space-between',
+                padding:'12px 14px 10px',
+                background:'var(--color-bg-section)',
+                borderBottom:'1px solid var(--color-border)',
+                flexShrink:0,
+              }}>
+                <span style={{fontSize:12,fontWeight:600,color:'var(--color-text)'}}>Run History</span>
+                <span style={{fontSize:10,color:'#9CA3AF'}}>{simLogs.length}개</span>
+              </div>
+              {/* 목록 */}
+              <div style={{overflowY:'auto',padding:'10px 12px',display:'flex',flexDirection:'column',gap:5}}>
+                {simLogs.map((log, idx) => {
+                  const runNo = simLogs.length - idx
+                  const isActive = reportData && log.id === reportData._logId
+                  return (
+                    <div key={log.id} style={{
+                      background: isActive ? '#ECFDF5' : '#fff',
+                      border: `1px solid ${isActive?'#6EE7B7':'#E5E7EB'}`,
+                      borderRadius:10, overflow:'hidden',
+                    }}>
+                      <div style={{display:'flex',alignItems:'flex-start',gap:6,padding:'8px 10px 7px'}}>
+                        <span style={{fontSize:9,fontWeight:800,color:'#1D9E75',flexShrink:0,marginTop:1}}>#{runNo}</span>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:10.5,fontWeight:700,color:'#111827',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                            {log.scenario||log.project||'시나리오'}
+                          </div>
+                          <div style={{fontSize:9,color:'#9CA3AF',marginTop:1.5}}>
+                            {log.rangeLabel} · {log.ts||'-'}
+                          </div>
+                        </div>
+                        <button onClick={()=>{
+                          setConfirmModal({
+                            visible:true,
+                            title:`Run #${runNo} 삭제`,
+                            message:'이 실행 기록을 삭제하면 Analyze·Insights 데이터도 함께 초기화됩니다.',
+                            onConfirm:()=>{
+                              if(reportData?._logId===log.id) setReportData(null)
+                              setSimLogs(prev=>{
+                                const next=prev.filter(l=>l.id!==log.id)
+                                try{localStorage.setItem('exsim_logs',JSON.stringify(next))}catch{}
+                                return next
+                              })
+                            },
+                          })
+                        }} style={{background:'none',border:'none',color:'#D1D5DB',cursor:'pointer',fontSize:11,padding:0,flexShrink:0,lineHeight:1,marginTop:1}}>✕</button>
+                      </div>
+                      <div style={{display:'flex',gap:6,padding:'0 8px 8px'}}>
+                        <button onClick={()=>onAnalyzeLog?.(log)}
+                          style={{flex:1,padding:'6px 0',border:'1px solid #1D9E75',borderRadius:7,background:'#1D9E75',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
+                          Analyze
+                        </button>
+                        <button onClick={()=>{
+                          setReportData({
+                            zones:log.zones||[],
+                            range:log.range||{label:log.rangeLabel},
+                            slotResults:log.results||[],
+                            flowEff:log.flowEff,
+                            engRate:log.engRate,
+                            avgWait:log.avgWait,
+                            _logId:log.id,
+                          })
+                          setTab('report')
+                        }} style={{flex:1,padding:'6px 0',border:'1px solid #7C3AED',borderRadius:7,background:'#7C3AED',fontSize:10,color:'#fff',fontWeight:600,cursor:'pointer'}}>
+                          Insights
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* ── 실시간 통계 플로팅 패널 ── */}
+          {showStats && (
+            <div style={{
+              position:'absolute', right:60, top:16, zIndex:21,
+              width:272,
+              background:'#fff',
+              border:'1px solid var(--color-border)',
+              borderRadius:'var(--r-lg)',
+              boxShadow:'0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
+              overflow:'hidden',
+            }}>
+              {/* 헤더 */}
+              <div style={{
+                display:'flex', alignItems:'center', justifyContent:'space-between',
+                padding:'12px 14px 10px',
+                background:'var(--color-bg-section)',
+                borderBottom:'1px solid var(--color-border)',
+              }}>
+                <span style={{fontSize:12,fontWeight:600,color:'var(--color-text)'}}>실시간 통계</span>
+                {(simStatus==='running'||simStatus==='paused') && (
+                  <span style={{fontSize:9,fontWeight:700,color:'#1D9E75',letterSpacing:'0.05em',textTransform:'uppercase'}}>
+                    {simStatus==='paused'?'⏸ 일시정지':'● LIVE'}
+                  </span>
+                )}
+              </div>
+              {/* 통계 그리드 */}
+              <div style={{padding:'10px 12px', display:'grid', gridTemplateColumns:'1fr 1fr', gap:6}}>
+                {[
+                  { label:'현재 관람객', val: dispStats?.curVisitors ?? '-' },
+                  { label:'밀집도',     val: dispStats?.density ?? '-' },
+                  { label:'체험 중',    val: dispStats?.experiencingCount != null ? dispStats.experiencingCount+'명' : '-', ok: dispStats?.experiencingCount > 0 },
+                  { label:'대기 중',    val: dispStats?.waitingCount != null ? dispStats.waitingCount+'명' : '-', warn: dispStats?.waitingCount > 5 },
+                  { label:'혼잡도',     val: dispStats?.congestion ?? '-', warn: dispStats?.congestionSec > 20 },
+                  { label:'병목',       val: dispStats?.bottlenecks ?? '-', warn: dispStats?.bottlenecksNum > 0 },
+                  { label:'스킵율',     val: dispStats?.skipRate ?? '-', warn: dispStats?.skipRateNum > 30, ok: dispStats?.skipRateNum < 10 && dispStats?.skipRateNum > 0 },
+                ].map(s => (
+                  <div key={s.label} style={{
+                    padding:'10px 12px', borderRadius:10, aspectRatio:'1/1',
+                    display:'flex', flexDirection:'column', justifyContent:'space-between',
+                    background: s.warn ? '#FEF2F2' : s.ok ? '#ECFDF5' : '#F9FAFB',
+                    border: `1px solid ${s.warn ? '#FECACA' : s.ok ? '#A7F3D0' : '#F0F0F0'}`,
+                  }}>
+                    <div style={{fontSize:9,fontWeight:600,color:'#9CA3AF',letterSpacing:'0.04em',textTransform:'uppercase'}}>{s.label}</div>
+                    <div style={{
+                      fontSize:20, fontWeight:700, lineHeight:1,
+                      color: s.warn ? '#DC2626' : s.ok ? '#059669' : '#111827',
+                      textAlign:'right', whiteSpace:'nowrap',
+                    }}>{s.val}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 캔버스 */}
           <div className="cw" style={{overflow:'hidden'}}>
-
-            {/* ── 시뮬레이션 실행 중 상단 오버레이 ── */}
-            {(simStatus==='running'||simStatus==='paused') && (
-              <div style={{
-                position:'absolute', bottom:52, left:'50%', transform:'translateX(-50%)',
-                zIndex:20, display:'flex', alignItems:'center', gap:8,
-                background:'rgba(15,30,24,0.82)', backdropFilter:'blur(6px)',
-                borderRadius:12, padding:'6px 14px',
-                boxShadow:'0 2px 12px rgba(0,0,0,0.25)',
-                pointerEvents:'none', whiteSpace:'nowrap',
-              }}>
-                {/* 슬롯 + 진행 */}
-                <span style={{fontSize:11,fontWeight:700,color:'#4ade9e'}}>
-                  {SLOTS[runningSlot]}
-                </span>
-                {simRange.start!==simRange.end && (
-                  <span style={{fontSize:10,color:'rgba(255,255,255,0.4)'}}>
-                    {runningSlot-simRange.start+1}/{simRange.end-simRange.start+1}
-                  </span>
-                )}
-                <div style={{width:1,height:12,background:'rgba(255,255,255,0.15)'}}/>
-                {/* 가상 경과 시간 */}
-                <span style={{fontSize:11,fontWeight:600,color:'rgba(255,255,255,0.85)',fontVariantNumeric:'tabular-nums'}}>
-                  ⏱ {dispStats?.simTimeDisplay ?? '00:00'}
-                </span>
-                <div style={{width:1,height:12,background:'rgba(255,255,255,0.15)'}}/>
-                {/* 현재 슬롯 방문객 + 진행률 */}
-                <span style={{fontSize:11,color:'rgba(255,255,255,0.85)'}}>
-                  <span style={{fontWeight:700,color:'#fff'}}>{dispStats?.slotVisitors ?? 0}</span>
-                  <span style={{color:'rgba(255,255,255,0.4)'}}>/{dispStats?.slotTotal ?? 0}명</span>
-                </span>
-                {/* 진행률 바 */}
-                <div style={{width:48,height:4,background:'rgba(255,255,255,0.12)',borderRadius:2,overflow:'hidden'}}>
-                  <div style={{height:'100%',borderRadius:2,background:'#1D9E75',width:`${dispStats?.slotProgress ?? 0}%`,transition:'width 0.3s'}}/>
-                </div>
-                {/* 일시정지 표시 */}
-                {simStatus==='paused' && (
-                  <>
-                    <div style={{width:1,height:12,background:'rgba(255,255,255,0.15)'}}/>
-                    <span style={{fontSize:10,color:'#facc15',fontWeight:700}}>⏸ 일시정지</span>
-                  </>
-                )}
-              </div>
-            )}
 
             <div style={{position:'relative', display:'inline-block', lineHeight:0}}>
               <canvas ref={sCRef}/>
